@@ -103,6 +103,31 @@ namespace IPScanner.Services.Imples
 
                     }
 
+                    if (scanOption.scanHostname)
+                    {
+                        hostAliveList.ToList().ForEach(host =>
+                        {
+                            try
+                            {
+                                IPHostEntry hostEntry = Dns.GetHostEntry(host.IPAddress);
+                                if (!String.IsNullOrEmpty(hostEntry.HostName))
+                                {
+                                    host.Hostname = hostEntry.HostName;
+                                }
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+
+                        });
+                    }
+
+                    if (scanOption.scanPort)
+                    {
+
+                    }
+
                     hostAliveList.OrderBy(sort => sort.IPAddress);
                     return hostAliveList;
                 });

@@ -121,6 +121,10 @@ namespace IPScanner
             {
                 MessageBoxUtils.Error(ex.Message);
             }
+            finally
+            {
+                ComponentUtils.DataGridViewCellAutoSize(this.dataGridView);
+            }
         }
     }
 }

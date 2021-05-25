@@ -58,6 +58,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IIPScannerService.cs" />
     <Compile Include="Services\Imples\IPScannerService.cs" />
+    <Compile Include="Utility\ComponentUtils.cs" />
     <Compile Include="Utility\MessageBoxUtils.cs" />
     <Compile Include="Utility\StringUtils.cs" />
     <EmbeddedResource Include="MainForm.resx">
