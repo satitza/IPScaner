@@ -157,20 +157,30 @@ namespace IPScanner.Services.Imples
             bool pingable = false;
             Ping pinger = null;
 
+
+
             try
             {
                 pinger = new Ping();
                 PingReply reply = pinger.Send(ipAddress.ToString(), int.Parse(timeout.ToString()));
+
+                Console.WriteLine("Ping : " + ipAddress.ToString());
+
                 pingable = reply.Status == IPStatus.Success;
                 if (pingable)
                 {
                     var results = (ICollection<HostInformationModel>)hostAliveList;
                     results.Add(new HostInformationModel { IPAddress = ipAddress.ToString() });
                 }
+
+                /*if (ipAddress.ToString().Equals("192.168.1.1") && pingable)
+                {
+                    MessageBox.Show("-*-");
+                }*/
             }
-            catch (PingException ex)
+            catch (PingException)
             {
-                Console.WriteLine(ex.Message);
+                // Console.WriteLine(ex.Message);
             }
             finally
             {
