@@ -33,7 +33,6 @@ namespace IPScanner
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBoxPort = new System.Windows.Forms.CheckBox();
             this.checkBoxHostname = new System.Windows.Forms.CheckBox();
             this.checkBoxIPAddress = new System.Windows.Forms.CheckBox();
             this.btn_scan = new System.Windows.Forms.Button();
@@ -81,7 +80,6 @@ namespace IPScanner
             this.panel1.Controls.Add(this.txt_thread);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.checkBoxPort);
             this.panel1.Controls.Add(this.checkBoxHostname);
             this.panel1.Controls.Add(this.checkBoxIPAddress);
             this.panel1.Controls.Add(this.btn_scan);
@@ -94,20 +92,10 @@ namespace IPScanner
             this.panel1.Size = new System.Drawing.Size(940, 106);
             this.panel1.TabIndex = 1;
             // 
-            // checkBoxPort
-            // 
-            this.checkBoxPort.AutoSize = true;
-            this.checkBoxPort.Location = new System.Drawing.Point(726, 66);
-            this.checkBoxPort.Name = "checkBoxPort";
-            this.checkBoxPort.Size = new System.Drawing.Size(45, 17);
-            this.checkBoxPort.TabIndex = 7;
-            this.checkBoxPort.Text = "Port";
-            this.checkBoxPort.UseVisualStyleBackColor = true;
-            // 
             // checkBoxHostname
             // 
             this.checkBoxHostname.AutoSize = true;
-            this.checkBoxHostname.Location = new System.Drawing.Point(726, 43);
+            this.checkBoxHostname.Location = new System.Drawing.Point(795, 43);
             this.checkBoxHostname.Name = "checkBoxHostname";
             this.checkBoxHostname.Size = new System.Drawing.Size(74, 17);
             this.checkBoxHostname.TabIndex = 6;
@@ -120,7 +108,7 @@ namespace IPScanner
             this.checkBoxIPAddress.Checked = true;
             this.checkBoxIPAddress.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxIPAddress.Enabled = false;
-            this.checkBoxIPAddress.Location = new System.Drawing.Point(726, 17);
+            this.checkBoxIPAddress.Location = new System.Drawing.Point(795, 17);
             this.checkBoxIPAddress.Name = "checkBoxIPAddress";
             this.checkBoxIPAddress.Size = new System.Drawing.Size(77, 17);
             this.checkBoxIPAddress.TabIndex = 5;
@@ -199,7 +187,7 @@ namespace IPScanner
             // 
             this.txt_thread.Location = new System.Drawing.Point(481, 15);
             this.txt_thread.Name = "txt_thread";
-            this.txt_thread.Size = new System.Drawing.Size(181, 20);
+            this.txt_thread.Size = new System.Drawing.Size(228, 20);
             this.txt_thread.TabIndex = 10;
             this.txt_thread.Text = "100";
             // 
@@ -207,7 +195,7 @@ namespace IPScanner
             // 
             this.txt_timeout.Location = new System.Drawing.Point(481, 40);
             this.txt_timeout.Name = "txt_timeout";
-            this.txt_timeout.Size = new System.Drawing.Size(181, 20);
+            this.txt_timeout.Size = new System.Drawing.Size(228, 20);
             this.txt_timeout.TabIndex = 11;
             this.txt_timeout.Text = "5000";
             // 
@@ -245,7 +233,6 @@ namespace IPScanner
         private System.Windows.Forms.TextBox txt_to;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btn_scan;
-        private System.Windows.Forms.CheckBox checkBoxPort;
         private System.Windows.Forms.CheckBox checkBoxHostname;
         private System.Windows.Forms.CheckBox checkBoxIPAddress;
         private System.Windows.Forms.TextBox txt_timeout;

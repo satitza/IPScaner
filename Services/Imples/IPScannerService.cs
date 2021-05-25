@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -44,8 +45,8 @@ namespace IPScanner.Services.Imples
         {
             try
             {
-                ICollection<string> listOfIpAddress = new List<string>();
                 ICollection<Thread> listOfThread = new List<Thread>();
+                ICollection<string> listOfIpAddress = new List<string>();
                 ICollection<HostInformationModel> hostAliveList = new List<HostInformationModel>();
 
                 for (int indexPosition1 = 0; indexPosition1 <= scanOption.space[0]; indexPosition1++)
@@ -68,7 +69,7 @@ namespace IPScanner.Services.Imples
 
                 return await Task.Factory.StartNew(() =>
                 {
-                    if (listOfIpAddress.Count < 100)
+                    if (listOfIpAddress.Count < scanOption.numberOfThread)
                     {
                         foreach (string ipAddress in listOfIpAddress)
                         {
@@ -100,32 +101,44 @@ namespace IPScanner.Services.Imples
                                 thread.Join();
                             }
                         }
-
                     }
 
                     if (scanOption.scanHostname)
                     {
-                        hostAliveList.ToList().ForEach(host =>
+                        listOfThread.Clear();
+                        if (hostAliveList.Count < scanOption.numberOfThread)
                         {
-                            try
+                            foreach (HostInformationModel host in hostAliveList)
                             {
-                                IPHostEntry hostEntry = Dns.GetHostEntry(host.IPAddress);
-                                if (!String.IsNullOrEmpty(hostEntry.HostName))
+                                Thread thread = new Thread(() => GetHostName(host.IPAddress, host));
+                                thread.Start();
+                                listOfThread.Add(thread);
+                            }
+
+                            foreach (Thread thread in listOfThread)
+                            {
+                                thread.Join();
+                            }
+                        }
+                        else
+                        {
+                            // แบ่ง threading ตามการตั้งค่าที่ option
+                            for (int i = 0; i < hostAliveList.Count; i = i + scanOption.numberOfThread)
+                            {
+                                var items = hostAliveList.Skip(i).Take(scanOption.numberOfThread);
+                                foreach (HostInformationModel host in items)
                                 {
-                                    host.Hostname = hostEntry.HostName;
+                                    Thread thread = new Thread(() => GetHostName(host.IPAddress, host));
+                                    thread.Start();
+                                    listOfThread.Add(thread);
+                                }
+
+                                foreach (Thread thread in listOfThread)
+                                {
+                                    thread.Join();
                                 }
                             }
-                            catch (Exception)
-                            {
-
-                            }
-
-                        });
-                    }
-
-                    if (scanOption.scanPort)
-                    {
-
+                        }
                     }
 
                     hostAliveList.OrderBy(sort => sort.IPAddress);
@@ -165,6 +178,23 @@ namespace IPScanner.Services.Imples
                 {
                     pinger.Dispose();
                 }
+            }
+        }
+
+        private void GetHostName(object ipAddress, object hostAliveList)
+        {
+            try
+            {
+                IPHostEntry hostEntry = Dns.GetHostEntry(ipAddress.ToString());
+                if (!String.IsNullOrEmpty(hostEntry.HostName))
+                {
+                    var host = (HostInformationModel)hostAliveList;
+                    host.Hostname = hostEntry.HostName;
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
     }

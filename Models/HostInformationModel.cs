@@ -11,7 +11,5 @@ namespace IPScanner.Models
         public string IPAddress { get; set; }
 
         public string Hostname { get; set; }
-
-        public string Port { get; set; }
     }
 }
