@@ -118,7 +118,7 @@ namespace IPScanner.Services.Imples
                         {
                             foreach (HostInformationModel host in hostAliveList)
                             {
-                                Thread thread = new Thread(() => GetHostName(host.IPAddress, host));
+                                Thread thread = new Thread(() => this.listLogs.Add(GetHostName(host.IPAddress, host)));
                                 thread.Start();
                                 listOfThread.Add(thread);
                             }
@@ -136,7 +136,7 @@ namespace IPScanner.Services.Imples
                                 var items = hostAliveList.Skip(i).Take(scanOption.numberOfThread);
                                 foreach (HostInformationModel host in items)
                                 {
-                                    Thread thread = new Thread(() => GetHostName(host.IPAddress, host));
+                                    Thread thread = new Thread(() => this.listLogs.Add(GetHostName(host.IPAddress, host)));
                                     thread.Start();
                                     listOfThread.Add(thread);
                                 }
@@ -192,7 +192,7 @@ namespace IPScanner.Services.Imples
             }
         }
 
-        private void GetHostName(object ipAddress, object hostAliveList)
+        private string GetHostName(object ipAddress, object hostAliveList)
         {
             try
             {
@@ -201,11 +201,16 @@ namespace IPScanner.Services.Imples
                 {
                     var host = (HostInformationModel)hostAliveList;
                     host.Hostname = hostEntry.HostName;
+                    return String.Format("[{0}] IP Address  {1}   hostname is  {2}   in local network", DateTime.Now, ipAddress, hostEntry.HostName);
+                }
+                else
+                {
+                    return String.Format("[{0}] IP Address  {1}  host name not found", DateTime.Now, ipAddress);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                return String.Format("[{0}] IP Address  {1}  resolve host name failed  {2} ", DateTime.Now, ipAddress, ex.Message);
             }
         }
     }
