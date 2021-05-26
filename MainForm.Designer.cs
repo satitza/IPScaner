@@ -33,6 +33,10 @@ namespace IPScanner
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txt_timeout = new System.Windows.Forms.TextBox();
+            this.txt_thread = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.checkBoxHostname = new System.Windows.Forms.CheckBox();
             this.checkBoxIPAddress = new System.Windows.Forms.CheckBox();
             this.btn_scan = new System.Windows.Forms.Button();
@@ -41,13 +45,16 @@ namespace IPScanner
             this.txt_from = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txt_thread = new System.Windows.Forms.TextBox();
-            this.txt_timeout = new System.Windows.Forms.TextBox();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.logConsole = new System.Windows.Forms.RichTextBox();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.tabControl.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -91,6 +98,40 @@ namespace IPScanner
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(940, 106);
             this.panel1.TabIndex = 1;
+            // 
+            // txt_timeout
+            // 
+            this.txt_timeout.Location = new System.Drawing.Point(481, 40);
+            this.txt_timeout.Name = "txt_timeout";
+            this.txt_timeout.Size = new System.Drawing.Size(228, 20);
+            this.txt_timeout.TabIndex = 11;
+            this.txt_timeout.Text = "5000";
+            // 
+            // txt_thread
+            // 
+            this.txt_thread.Location = new System.Drawing.Point(481, 15);
+            this.txt_thread.Name = "txt_thread";
+            this.txt_thread.Size = new System.Drawing.Size(228, 20);
+            this.txt_thread.TabIndex = 10;
+            this.txt_thread.Text = "100";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(424, 44);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(51, 13);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Timeout :";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(376, 18);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(99, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Number of Thread :";
             // 
             // checkBoxHostname
             // 
@@ -160,51 +201,60 @@ namespace IPScanner
             // dataGridView
             // 
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView.Location = new System.Drawing.Point(12, 124);
+            this.dataGridView.Location = new System.Drawing.Point(6, 6);
             this.dataGridView.Name = "dataGridView";
-            this.dataGridView.Size = new System.Drawing.Size(940, 337);
+            this.dataGridView.Size = new System.Drawing.Size(920, 299);
             this.dataGridView.TabIndex = 2;
             // 
-            // label3
+            // tabControl
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(376, 18);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(99, 13);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Number of Thread :";
+            this.tabControl.Controls.Add(this.tabPage1);
+            this.tabControl.Controls.Add(this.tabPage2);
+            this.tabControl.Location = new System.Drawing.Point(12, 124);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(940, 337);
+            this.tabControl.TabIndex = 3;
             // 
-            // label4
+            // tabPage1
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(424, 44);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(51, 13);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "Timeout :";
+            this.tabPage1.Controls.Add(this.dataGridView);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(932, 311);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Result";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // txt_thread
+            // tabPage2
             // 
-            this.txt_thread.Location = new System.Drawing.Point(481, 15);
-            this.txt_thread.Name = "txt_thread";
-            this.txt_thread.Size = new System.Drawing.Size(228, 20);
-            this.txt_thread.TabIndex = 10;
-            this.txt_thread.Text = "100";
+            this.tabPage2.Controls.Add(this.logConsole);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(932, 311);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Log";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // txt_timeout
+            // logConsole
             // 
-            this.txt_timeout.Location = new System.Drawing.Point(481, 40);
-            this.txt_timeout.Name = "txt_timeout";
-            this.txt_timeout.Size = new System.Drawing.Size(228, 20);
-            this.txt_timeout.TabIndex = 11;
-            this.txt_timeout.Text = "5000";
+            this.logConsole.BackColor = System.Drawing.Color.Black;
+            this.logConsole.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logConsole.ForeColor = System.Drawing.Color.Lime;
+            this.logConsole.Location = new System.Drawing.Point(3, 3);
+            this.logConsole.Name = "logConsole";
+            this.logConsole.Size = new System.Drawing.Size(926, 305);
+            this.logConsole.TabIndex = 0;
+            this.logConsole.Text = "";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(964, 486);
-            this.Controls.Add(this.dataGridView);
+            this.Controls.Add(this.tabControl);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip);
             this.Name = "MainForm";
@@ -216,6 +266,9 @@ namespace IPScanner
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.tabControl.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -239,6 +292,10 @@ namespace IPScanner
         private System.Windows.Forms.TextBox txt_thread;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.RichTextBox logConsole;
     }
 }
 

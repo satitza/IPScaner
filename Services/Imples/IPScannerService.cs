@@ -15,6 +15,14 @@ namespace IPScanner.Services.Imples
 {
     class IPScannerService : IIPScannerService
     {
+
+        private ICollection<string> listLogs;
+
+        public IPScannerService(ICollection<string> listLogs)
+        {
+            this.listLogs = listLogs;
+        }
+
         public async Task<bool> IsIPAddress(string ipAddress)
         {
             return await Task.Factory.StartNew(() =>
@@ -73,7 +81,7 @@ namespace IPScanner.Services.Imples
                     {
                         foreach (string ipAddress in listOfIpAddress)
                         {
-                            Thread thread = new Thread(() => PingHost(ipAddress, scanOption.timeOut, hostAliveList));
+                            Thread thread = new Thread(() => this.listLogs.Add(PingHost(ipAddress, scanOption.timeOut, hostAliveList)));
                             thread.Start();
                             listOfThread.Add(thread);
                         }
@@ -91,7 +99,7 @@ namespace IPScanner.Services.Imples
                             var items = listOfIpAddress.Skip(i).Take(scanOption.numberOfThread);
                             foreach (string ipAddress in items)
                             {
-                                Thread thread = new Thread(() => PingHost(ipAddress, scanOption.timeOut, hostAliveList));
+                                Thread thread = new Thread(() => this.listLogs.Add(PingHost(ipAddress, scanOption.timeOut, hostAliveList)));
                                 thread.Start();
                                 listOfThread.Add(thread);
                             }
@@ -144,7 +152,6 @@ namespace IPScanner.Services.Imples
                     hostAliveList.OrderBy(sort => sort.IPAddress);
                     return hostAliveList;
                 });
-
             }
             catch (Exception ex)
             {
@@ -152,19 +159,15 @@ namespace IPScanner.Services.Imples
             }
         }
 
-        private void PingHost(object ipAddress, object timeout, object hostAliveList)
+        private string PingHost(object ipAddress, object timeout, object hostAliveList)
         {
             bool pingable = false;
             Ping pinger = null;
-
-
 
             try
             {
                 pinger = new Ping();
                 PingReply reply = pinger.Send(ipAddress.ToString(), int.Parse(timeout.ToString()));
-
-                Console.WriteLine("Ping : " + ipAddress.ToString());
 
                 pingable = reply.Status == IPStatus.Success;
                 if (pingable)
@@ -173,14 +176,12 @@ namespace IPScanner.Services.Imples
                     results.Add(new HostInformationModel { IPAddress = ipAddress.ToString() });
                 }
 
-                /*if (ipAddress.ToString().Equals("192.168.1.1") && pingable)
-                {
-                    MessageBox.Show("-*-");
-                }*/
+                return String.Format("[{0}] Ping {1} host alive is {2}", DateTime.Now, ipAddress, pingable);
+
             }
-            catch (PingException)
+            catch (PingException ex)
             {
-                // Console.WriteLine(ex.Message);
+                return String.Format("[{0}] Ping {1} host exception : {2}", DateTime.Now, ipAddress, ex.Message);
             }
             finally
             {

@@ -21,6 +21,8 @@ namespace IPScanner
 
         private ScanOptionModel ScanOption;
 
+        private ICollection<string> listLogs = new List<string>();
+
         public MainForm()
         {
             InitializeComponent();
@@ -30,7 +32,7 @@ namespace IPScanner
         {
             try
             {
-                this.IPScannerService = new IPScannerService();
+                this.IPScannerService = new IPScannerService(this.listLogs);
                 this.ScanOption = new ScanOptionModel();
             }
             catch (Exception ex)
@@ -103,9 +105,33 @@ namespace IPScanner
                             this.dataGridView.DataSource = null;
                             this.toolStripStatusLabel2.Text = "0";
 
+                            /*---------------------------------------------------------------------------------------------------*/
+
+                            this.listLogs.Clear();
+                            this.logConsole.Clear();
+
+
+                            this.logConsole.AppendText(String.Format("[{0}] Start scanning ...", DateTime.Now));
+                            this.logConsole.AppendText(Environment.NewLine);
+
+
                             ICollection<HostInformationModel> results = await this.IPScannerService.Scan(ScanOption);
                             this.dataGridView.DataSource = results;
                             this.toolStripStatusLabel2.Text = results.Count.ToString();
+
+                            if (this.listLogs.Count > 0)
+                            {
+                                foreach (string log in listLogs)
+                                {
+                                    this.logConsole.AppendText(log);
+                                    this.logConsole.AppendText(Environment.NewLine);
+                                }
+                            }
+
+                            this.logConsole.AppendText(String.Format("[{0}] Scan success", DateTime.Now));
+                            this.logConsole.AppendText(Environment.NewLine);
+
+                            /*---------------------------------------------------------------------------------------------------*/
 
                             MessageBoxUtils.Information("Scan IP Address สำเร็จ");
                             this.btn_scan.Enabled = true;
