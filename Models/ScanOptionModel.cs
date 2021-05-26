@@ -18,8 +18,6 @@ namespace IPScanner.Models
 
         public bool scanHostname { get; set; }
 
-        public bool scanPort { get; set; }
-
         public int numberOfThread { get; set; }
 
         public int timeOut { get; set; }
