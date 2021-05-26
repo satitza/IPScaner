@@ -65,6 +65,7 @@ namespace IPScanner
                 }
                 else
                 {
+
                     // set scan option
                     this.ScanOption.ipAddressFrom = this.txt_from.Text.Trim().Split('.');
                     this.ScanOption.ipAddressTo = this.txt_to.Text.Trim().Split('.');
