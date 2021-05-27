@@ -9,8 +9,10 @@ namespace IPScanner.Services
 {
     interface IIPScannerService
     {
+        Task<bool> IsIPAddress(string ipAddress);
+
         Task<ICollection<HostInformationModel>> Scan(ScanOptionModel scanOption);
 
-        Task<bool> IsIPAddress(string ipAddress);
+        Task<ICollection<PortInformationModel>> ScanPort(string ipAddress);
     }
 }

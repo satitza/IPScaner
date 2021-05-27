@@ -53,6 +53,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\HostInformationModel.cs" />
+    <Compile Include="Models\PortInformationModel.cs" />
     <Compile Include="Models\ScanOptionModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

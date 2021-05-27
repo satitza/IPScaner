@@ -29,6 +29,7 @@ namespace IPScanner
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -47,20 +48,23 @@ namespace IPScanner
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.logConsole = new System.Windows.Forms.RichTextBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView = new System.Windows.Forms.TreeView();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.scanPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
-            this.tabControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.tabControl.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -238,6 +242,23 @@ namespace IPScanner
             this.tabPage1.Text = "Result";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.treeView);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.dataGridView);
+            this.splitContainer1.Size = new System.Drawing.Size(1150, 461);
+            this.splitContainer1.SplitterDistance = 383;
+            this.splitContainer1.TabIndex = 5;
+            // 
             // treeView
             // 
             this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -245,6 +266,7 @@ namespace IPScanner
             this.treeView.Name = "treeView";
             this.treeView.Size = new System.Drawing.Size(383, 461);
             this.treeView.TabIndex = 0;
+            this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
             // 
             // dataGridView
             // 
@@ -268,22 +290,19 @@ namespace IPScanner
             this.tabControl.Size = new System.Drawing.Size(1164, 493);
             this.tabControl.TabIndex = 3;
             // 
-            // splitContainer1
+            // contextMenuStrip
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
-            this.splitContainer1.Name = "splitContainer1";
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.scanPortToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(181, 48);
             // 
-            // splitContainer1.Panel1
+            // scanPortToolStripMenuItem
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.treeView);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.dataGridView);
-            this.splitContainer1.Size = new System.Drawing.Size(1150, 461);
-            this.splitContainer1.SplitterDistance = 383;
-            this.splitContainer1.TabIndex = 5;
+            this.scanPortToolStripMenuItem.Name = "scanPortToolStripMenuItem";
+            this.scanPortToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.scanPortToolStripMenuItem.Text = "Scan Port";
+            this.scanPortToolStripMenuItem.Click += new System.EventHandler(this.scanPortToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -303,12 +322,13 @@ namespace IPScanner
             this.panel1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
-            this.tabControl.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.tabControl.ResumeLayout(false);
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -338,6 +358,8 @@ namespace IPScanner
         private System.Windows.Forms.TreeView treeView;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem scanPortToolStripMenuItem;
     }
 }
 

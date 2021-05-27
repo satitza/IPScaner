@@ -23,6 +23,8 @@ namespace IPScanner
 
         private ICollection<string> listLogs = new List<string>();
 
+        private bool ScanPortState { get; set; } = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -34,6 +36,28 @@ namespace IPScanner
             {
                 this.IPScannerService = new IPScannerService(this.listLogs);
                 this.ScanOption = new ScanOptionModel();
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
+        }
+
+        private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            try
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    if (!e.Node.Text.Equals("Host") && this.ScanPortState == false)
+                    {
+                        this.treeView.ContextMenuStrip = this.contextMenuStrip;
+                    }
+                    else
+                    {
+                        this.treeView.ContextMenuStrip = null;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -117,10 +141,11 @@ namespace IPScanner
 
                             ICollection<HostInformationModel> results = await this.IPScannerService.Scan(ScanOption);
 
-
                             /* Tree view */
                             if (results.Count > 0)
                             {
+                                this.treeView.Nodes.Add(new TreeNode("Host"));
+
                                 foreach (HostInformationModel host in results)
                                 {
                                     string data = "";
@@ -133,12 +158,11 @@ namespace IPScanner
                                         data = String.Format("{0}", host.IPAddress);
                                     }
 
-                                    this.treeView.Nodes.Add(new TreeNode(data));
+                                    this.treeView.Nodes[0].Nodes.Add(data);
                                 }
-                            }
 
-                            /* Datagridview */
-                            this.dataGridView.DataSource = results;
+                                this.treeView.ExpandAll();
+                            }
 
                             /* Log console */
                             if (this.listLogs.Count > 0)
@@ -171,9 +195,42 @@ namespace IPScanner
             {
                 MessageBoxUtils.Error(ex.Message);
             }
+        }
+
+        private async void scanPortToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MessageBoxUtils.Question("ยืนยันการ Scan Port"))
+                {
+                    this.listLogs.Clear();
+                    this.logConsole.AppendText(String.Format("[{0}] Start port scanning ...", DateTime.Now));
+                    this.logConsole.AppendText(Environment.NewLine);
+
+                    this.ScanPortState = true;
+                    this.dataGridView.DataSource = null;
+                    this.dataGridView.DataSource = await this.IPScannerService.ScanPort(this.treeView.SelectedNode.Text.Trim());
+
+                    foreach (string log in this.listLogs)
+                    {
+                        this.logConsole.AppendText(log);
+                        this.logConsole.AppendText(Environment.NewLine);
+                    }
+
+                    MessageBoxUtils.Information("Scan port success.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
             finally
             {
+                this.ScanPortState = false;
                 ComponentUtils.DataGridViewCellAutoSize(this.dataGridView);
+
+                this.logConsole.AppendText(String.Format("[{0}] Port scan success.", DateTime.Now));
+                this.logConsole.AppendText(Environment.NewLine);
             }
         }
     }

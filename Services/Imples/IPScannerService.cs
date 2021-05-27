@@ -18,9 +18,51 @@ namespace IPScanner.Services.Imples
 
         private ICollection<string> listLogs;
 
+        private Dictionary<int, string> portLists;
+
         public IPScannerService(ICollection<string> listLogs)
         {
-            this.listLogs = listLogs;
+            try
+            {
+                this.listLogs = listLogs;
+                this.portLists = new Dictionary<int, string>();
+
+                // initial port list
+                this.portLists.Add(21, "File Transfer Protocol (FTP)");
+                this.portLists.Add(22, "Secure Shell (SSH)");
+                this.portLists.Add(23, "Telnet protocol");
+                this.portLists.Add(25, "Simple Mail Transfer Protocol (SMTP)");
+                this.portLists.Add(53, "Domain Name System (DNS)");
+                this.portLists.Add(80, "Hypertext Transfer Protocol (HTTP)");
+                this.portLists.Add(135, "Microsoft EPMAP (End Point Mapper)");
+                this.portLists.Add(443, "Hypertext Transfer Protocol Secure (HTTPS)");
+                this.portLists.Add(445, "Microsoft-DS (Directory Services) SMB");
+                this.portLists.Add(502, "Modbus Protocol");
+                this.portLists.Add(660, "macOS Server administration");
+                this.portLists.Add(802, "MODBUS/TCP Security");
+                this.portLists.Add(873, "rsync file synchronization protocol");
+                this.portLists.Add(902, "VMware ESXi");
+                this.portLists.Add(1167, "Cisco IP SLA (Service Assurance Agent)");
+                this.portLists.Add(1194, "OpenVPN");
+                this.portLists.Add(1433, "Microsoft SQL Server database management system (MSSQL) server");
+                this.portLists.Add(1723, "Point-to-Point Tunneling Protocol (PPTP)");
+                this.portLists.Add(1812, "RADIUS authentication protocol");
+                this.portLists.Add(3260, "iSCSI");
+                this.portLists.Add(3306, "MySQL database system");
+                this.portLists.Add(3389, "Microsoft Terminal Server (RDP)");
+                this.portLists.Add(5432, "PostgreSQL database system");
+                this.portLists.Add(5500, "VNC Remote Frame Buffer RFB protocol");
+                this.portLists.Add(5938, "TeamViewer remote desktop protocol");
+                this.portLists.Add(7025, "Zimbra LMTP [mailbox]—local mail delivery");
+                this.portLists.Add(8834, "Nessus, a vulnerability scanner");
+                this.portLists.Add(10050, "Zabbix agent");
+                this.portLists.Add(10051, "Zabbix trapper");
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Cannot initial ip scan service. " + ex.Message);
+            }
         }
 
         public async Task<bool> IsIPAddress(string ipAddress)
@@ -211,6 +253,51 @@ namespace IPScanner.Services.Imples
             catch (Exception ex)
             {
                 return String.Format("[{0}] IP Address  {1}  resolve host name failed  {2} ", DateTime.Now, ipAddress, ex.Message);
+            }
+        }
+
+        public async Task<ICollection<PortInformationModel>> ScanPort(string ipAddress)
+        {
+            try
+            {
+                return await Task.Factory.StartNew(() =>
+                {
+                    ICollection<PortInformationModel> portOpenLists = new List<PortInformationModel>();
+
+                    if (ipAddress.Split(' ').Length > 0)
+                    {
+                        ipAddress = ipAddress.Split(' ')[ipAddress.Split(' ').Length - 2];
+                    }
+
+                    foreach (KeyValuePair<int, string> entry in this.portLists)
+                    {
+                        using (TcpClient client = new TcpClient())
+                        {
+                            var c = client.BeginConnect(IPAddress.Parse(ipAddress), entry.Key, null, null);
+                            var success = c.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+
+                            if (success)
+                            {
+                                portOpenLists.Add(new PortInformationModel() { PortNumber = entry.Key, PortDetail = entry.Value });
+                                this.listLogs.Add(String.Format("[{0}] IP Address  {1}  port  {2}  is open.", DateTime.Now, ipAddress, entry.Key));
+                            }
+                            else
+                            {
+                                this.listLogs.Add(String.Format("[{0}] IP Address  {1}  port  {2}  is close.", DateTime.Now, ipAddress, entry.Key));
+                            }
+
+                            client.Close();
+
+                        }
+                    }
+
+                    return portOpenLists;
+                });
+            }
+            catch (Exception ex)
+            {
+                this.listLogs.Add(String.Format("[{0}] Scan port ip address  {1}  failed.  {2}", DateTime.Now, ipAddress, ex.Message));
+                throw new Exception(String.Format("Scan port ip address  {1}  failed.  {2}", ipAddress, ex.Message));
             }
         }
     }
