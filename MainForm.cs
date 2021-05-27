@@ -108,24 +108,48 @@ namespace IPScanner
 
                             /*---------------------------------------------------------------------------------------------------*/
 
+                            this.treeView.Nodes.Clear();
                             this.listLogs.Clear();
                             this.logConsole.Clear();
-
 
                             this.logConsole.AppendText(String.Format("[{0}] Start scanning ...", DateTime.Now));
                             this.logConsole.AppendText(Environment.NewLine);
 
-
                             ICollection<HostInformationModel> results = await this.IPScannerService.Scan(ScanOption);
-                            this.dataGridView.DataSource = results;
-                            this.toolStripStatusLabel2.Text = results.Count.ToString();
 
+
+                            /* Tree view */
+                            if (results.Count > 0)
+                            {
+                                foreach (HostInformationModel host in results)
+                                {
+                                    string data = "";
+                                    if (!String.IsNullOrEmpty(host.Hostname))
+                                    {
+                                        data = String.Format("{0} [{1}]", host.IPAddress, host.Hostname);
+                                    }
+                                    else
+                                    {
+                                        data = String.Format("{0}", host.IPAddress);
+                                    }
+
+                                    this.treeView.Nodes.Add(new TreeNode(data));
+                                }
+                            }
+
+                            /* Datagridview */
+                            this.dataGridView.DataSource = results;
+
+                            /* Log console */
                             if (this.listLogs.Count > 0)
                             {
                                 foreach (string log in listLogs)
                                 {
-                                    this.logConsole.AppendText(log);
-                                    this.logConsole.AppendText(Environment.NewLine);
+                                    if (!String.IsNullOrEmpty(log))
+                                    {
+                                        this.logConsole.AppendText(log);
+                                        this.logConsole.AppendText(Environment.NewLine);
+                                    }
                                 }
                             }
 
@@ -137,6 +161,8 @@ namespace IPScanner
                             MessageBoxUtils.Information("Scan IP Address สำเร็จ");
                             this.btn_scan.Enabled = true;
                             this.btn_scan.Text = "Scan";
+
+                            this.toolStripStatusLabel2.Text = results.Count.ToString();
                         }
                     }
                 }
