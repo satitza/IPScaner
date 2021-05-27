@@ -8,6 +8,8 @@ namespace IPScanner.Models
 {
     class PortInformationModel
     {
+        public string IPAddress { get; set; }
+
         public int PortNumber { get; set; }
 
         public string PortDetail { get; set; }

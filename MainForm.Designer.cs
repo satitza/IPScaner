@@ -295,12 +295,12 @@ namespace IPScanner
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.scanPortToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuStrip.Size = new System.Drawing.Size(125, 26);
             // 
             // scanPortToolStripMenuItem
             // 
             this.scanPortToolStripMenuItem.Name = "scanPortToolStripMenuItem";
-            this.scanPortToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.scanPortToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.scanPortToolStripMenuItem.Text = "Scan Port";
             this.scanPortToolStripMenuItem.Click += new System.EventHandler(this.scanPortToolStripMenuItem_Click);
             // 

@@ -262,23 +262,19 @@ namespace IPScanner.Services.Imples
             {
                 return await Task.Factory.StartNew(() =>
                 {
+                    string[] ip = ipAddress.Split(' ');
                     ICollection<PortInformationModel> portOpenLists = new List<PortInformationModel>();
-
-                    if (ipAddress.Split(' ').Length > 0)
-                    {
-                        ipAddress = ipAddress.Split(' ')[ipAddress.Split(' ').Length - 2];
-                    }
 
                     foreach (KeyValuePair<int, string> entry in this.portLists)
                     {
                         using (TcpClient client = new TcpClient())
                         {
-                            var c = client.BeginConnect(IPAddress.Parse(ipAddress), entry.Key, null, null);
+                            var c = client.BeginConnect(IPAddress.Parse(ip[0]), entry.Key, null, null);
                             var success = c.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
 
                             if (success)
                             {
-                                portOpenLists.Add(new PortInformationModel() { PortNumber = entry.Key, PortDetail = entry.Value });
+                                portOpenLists.Add(new PortInformationModel() { IPAddress = ipAddress, PortNumber = entry.Key, PortDetail = entry.Value });
                                 this.listLogs.Add(String.Format("[{0}] IP Address  {1}  port  {2}  is open.", DateTime.Now, ipAddress, entry.Key));
                             }
                             else
