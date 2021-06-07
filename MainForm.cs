@@ -139,7 +139,7 @@ namespace IPScanner
                             this.logConsole.AppendText(String.Format("[{0}] Start scanning ...", DateTime.Now));
                             this.logConsole.AppendText(Environment.NewLine);
 
-                            ICollection<HostInformationModel> results = await this.IPScannerService.Scan(ScanOption);
+                            ICollection<HostInformationModel> results = await this.IPScannerService.Scan(this.ScanOption);
 
                             /* Tree view */
                             if (results.Count > 0)
