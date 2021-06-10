@@ -54,6 +54,7 @@ namespace IPScanner
             this.tabControl = new System.Windows.Forms.TabControl();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.scanPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.capturePacketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -292,16 +293,24 @@ namespace IPScanner
             // contextMenuStrip
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.scanPortToolStripMenuItem});
+            this.scanPortToolStripMenuItem,
+            this.capturePacketToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(125, 26);
+            this.contextMenuStrip.Size = new System.Drawing.Size(181, 70);
             // 
             // scanPortToolStripMenuItem
             // 
             this.scanPortToolStripMenuItem.Name = "scanPortToolStripMenuItem";
-            this.scanPortToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.scanPortToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.scanPortToolStripMenuItem.Text = "Scan Port";
             this.scanPortToolStripMenuItem.Click += new System.EventHandler(this.scanPortToolStripMenuItem_Click);
+            // 
+            // capturePacketToolStripMenuItem
+            // 
+            this.capturePacketToolStripMenuItem.Name = "capturePacketToolStripMenuItem";
+            this.capturePacketToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.capturePacketToolStripMenuItem.Text = "Capture Packet";
+            this.capturePacketToolStripMenuItem.Click += new System.EventHandler(this.capturePacketToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -359,6 +368,7 @@ namespace IPScanner
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem scanPortToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem capturePacketToolStripMenuItem;
     }
 }
 

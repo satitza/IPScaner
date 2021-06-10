@@ -233,5 +233,19 @@ namespace IPScanner
                 this.logConsole.AppendText(Environment.NewLine);
             }
         }
+
+        private void capturePacketToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CaptureForm captureForm = new CaptureForm();
+                captureForm.IPAddress = this.treeView.SelectedNode.Text;
+                captureForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
+        }
     }
 }
