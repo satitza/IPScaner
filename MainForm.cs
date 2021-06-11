@@ -649,7 +649,7 @@ namespace IPScanner
                         {
                             this.victimList.Add(ipArr[0]);
                             this.treeView.SelectedNode.ForeColor = Color.Red;
-                            MessageBox.Show(this.NetworkService.GetMacByIP(ipArr[0]));
+                            //MessageBox.Show(this.NetworkService.GetMacByIP(ipArr[0]));
                             // loop arp sproof send victim list to parameter
                         }
                         else
