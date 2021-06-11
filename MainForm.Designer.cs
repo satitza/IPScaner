@@ -77,6 +77,7 @@ namespace IPScanner
             this.scanPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.capturePacketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.netcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -534,9 +535,10 @@ namespace IPScanner
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.scanPortToolStripMenuItem,
-            this.capturePacketToolStripMenuItem});
+            this.capturePacketToolStripMenuItem,
+            this.netcutToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(155, 48);
+            this.contextMenuStrip.Size = new System.Drawing.Size(181, 92);
             // 
             // scanPortToolStripMenuItem
             // 
@@ -568,6 +570,13 @@ namespace IPScanner
             this.splitContainer3.Size = new System.Drawing.Size(1150, 192);
             this.splitContainer3.SplitterDistance = 383;
             this.splitContainer3.TabIndex = 8;
+            // 
+            // netcutToolStripMenuItem
+            // 
+            this.netcutToolStripMenuItem.Name = "netcutToolStripMenuItem";
+            this.netcutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.netcutToolStripMenuItem.Text = "Netcut";
+            this.netcutToolStripMenuItem.Click += new System.EventHandler(this.netcutToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -659,6 +668,7 @@ namespace IPScanner
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.RichTextBox richTextBoxHex;
         private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.ToolStripMenuItem netcutToolStripMenuItem;
     }
 }
 

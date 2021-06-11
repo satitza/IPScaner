@@ -21,11 +21,13 @@ namespace IPScanner
 {
     public partial class MainForm : Form
     {
-        private IIPScannerService IPScannerService;
-
         private ScanOptionModel ScanOption;
 
         private ICollection<string> listLogs = new List<string>();
+
+        private IIPScannerService IPScannerService;
+
+        private INetworkService NetworkService;
 
         private bool ScanPortState { get; set; } = false;
 
@@ -38,8 +40,9 @@ namespace IPScanner
         {
             try
             {
-                this.IPScannerService = new IPScannerService(this.listLogs);
                 this.ScanOption = new ScanOptionModel();
+                this.IPScannerService = new IPScannerService(this.listLogs);
+                this.NetworkService = new NetworkService();
             }
             catch (Exception ex)
             {
@@ -355,6 +358,9 @@ namespace IPScanner
                             this.CaptureProcessStatus = true;
                             this.buttonStart.Enabled = false;
                             this.buttonStop.Enabled = true;
+
+                            this.logConsole.AppendText(String.Format("[{0}] Start capture packet on interface {1}", DateTime.Now, this.device.Interface.FriendlyName));
+                            this.logConsole.AppendText(Environment.NewLine);
                         }
                     }
                     // restart capture
@@ -372,6 +378,9 @@ namespace IPScanner
                             this.CaptureProcessStatus = true;
                             this.buttonStart.Enabled = false;
                             this.buttonStop.Enabled = true;
+
+                            this.logConsole.AppendText(String.Format("[{0}] Start capture packet on interface {1}", DateTime.Now, this.device.Interface.FriendlyName));
+                            this.logConsole.AppendText(Environment.NewLine);
                         }
                     }
                 }
@@ -394,6 +403,9 @@ namespace IPScanner
 
                     this.buttonStart.Enabled = true;
                     this.buttonStop.Enabled = false;
+
+                    this.logConsole.AppendText(String.Format("[{0}] Stop capture packet on interface {1}", DateTime.Now, this.device.Interface.FriendlyName));
+                    this.logConsole.AppendText(Environment.NewLine);
                 }
             }
             catch (Exception ex)
@@ -567,8 +579,8 @@ namespace IPScanner
                                                 "\r\nSender hardware address: " + senderHardwareAddress +
                                                 "\r\nTarget hardware address: " + targerHardwareAddress);
                             }
-
                             break;
+
                         case "ICMP":
 
                             var icmpPacket = (ICMPv4Packet)packet.Extract(typeof(ICMPv4Packet));
@@ -601,6 +613,52 @@ namespace IPScanner
                     }
 
                     this.richTextBoxDetail.AppendText(Environment.NewLine);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
+        }
+
+        /************************************************************************************************************************************************/
+
+        private ICollection<string> victimList = new List<string>();
+
+        private void netcutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(this.comboBoxInterface.Text))
+                {
+                    MessageBoxUtils.Warning("กรุณาเลือก Interface");
+                }
+                else
+                {
+                    string[] ipArr = this.treeView.SelectedNode.Text.Split(' ');
+
+                    if (ipArr[0].Split('.')[3] == "1")
+                    {
+                        MessageBoxUtils.Warning("Cannot arp sproof gateway");
+                    }
+                    else
+                    {
+                        string existingVictim = this.victimList.FirstOrDefault(f => f == ipArr[0]);
+
+                        if (existingVictim == null)
+                        {
+                            this.victimList.Add(ipArr[0]);
+                            this.treeView.SelectedNode.ForeColor = Color.Red;
+                            MessageBox.Show(this.NetworkService.GetMacByIP(ipArr[0]));
+                            // loop arp sproof send victim list to parameter
+                        }
+                        else
+                        {
+                            this.victimList.Remove(ipArr[0]);
+                            this.treeView.SelectedNode.ForeColor = Color.Black;
+                            // remove victim from list add restart arp sproof thread
+                        }
+                    }
                 }
             }
             catch (Exception ex)
