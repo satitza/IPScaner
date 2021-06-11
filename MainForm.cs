@@ -582,6 +582,22 @@ namespace IPScanner
                                                 "\r\nSequence number: " + icmpPacket.Sequence.ToString("x"));
                             }
                             break;
+
+                        case "IGMP":
+
+                            if (getPacket)
+                            {
+                                var igmpPacket = (IGMPv2Packet)packet.Extract(typeof(IGMPv2Packet));
+                                if (igmpPacket != null)
+                                {
+                                    this.richTextBoxDetail.AppendText("Packet number: " + key +
+                                                    " Type: IGMP v2" +
+                                                    "\r\nType: " + igmpPacket.Type +
+                                                    "\r\nGroup address: " + igmpPacket.GroupAddress +
+                                                    "\r\nMax response time" + igmpPacket.MaxResponseTime);
+                                }
+                            }
+                            break;
                     }
 
                     this.richTextBoxDetail.AppendText(Environment.NewLine);
