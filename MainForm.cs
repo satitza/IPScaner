@@ -341,6 +341,9 @@ namespace IPScanner
                     this.device.OnPacketArrival +=
                         new PacketArrivalEventHandler(device_OnPacketArrival);
 
+                    this.richTextBoxDetail.Clear();
+                    this.richTextBoxHex.Clear();
+
                     // start capture
                     if (this.CaptureProcessStatus == false)
                     {
@@ -476,16 +479,112 @@ namespace IPScanner
         {
             try
             {
-                Packet packet;
+                PacketDotNet.Packet packet;
                 string protocol = e.Item.SubItems[4].Text;
                 int key = Int32.Parse(e.Item.SubItems[0].Text);
                 bool getPacket = CapturePacketLists.TryGetValue(key, out packet);
 
                 if (getPacket)
                 {
-                    this.richTextBox.Clear();
-                    this.richTextBox.AppendText(packet.PrintHex());
-                    this.richTextBox.AppendText(Environment.NewLine);
+                    var ipPacket = (IpPacket)packet.Extract(typeof(IpPacket));
+                    this.richTextBoxDetail.Clear();
+
+                    this.richTextBoxHex.Clear();
+                    this.richTextBoxHex.AppendText(ipPacket.PrintHex());
+                    this.richTextBoxHex.AppendText(Environment.NewLine);
+
+                    switch (protocol)
+                    {
+                        case "TCP":
+
+                            var tcpPacket = (TcpPacket)packet.Extract(typeof(TcpPacket));
+                            int TCPsrcPort = tcpPacket.SourcePort;
+                            int TCPdstPort = tcpPacket.DestinationPort;
+                            var TCPchecksum = tcpPacket.Checksum;
+                            string source = String.Format("{0}:{1}", ipPacket.SourceAddress, TCPsrcPort);
+                            string destination = String.Format("{0}:{1}", ipPacket.DestinationAddress, TCPdstPort);
+
+                            this.richTextBoxDetail.AppendText("Packet number: " + key +
+                                            " Type: TCP" +
+                                            "\r\nSource : " + source +
+                                            "\r\nDestination : " + destination +
+                                            "\r\nTCP header size: " + tcpPacket.DataOffset +
+                                            "\r\nWindow size: " + tcpPacket.WindowSize + // bytes that the receiver is willing to receive
+                                            "\r\nChecksum:" + TCPchecksum.ToString() + (tcpPacket.ValidChecksum ? ", valid" : ", invalid") +
+                                            "\r\nTCP checksum: " + (tcpPacket.ValidTCPChecksum ? ", valid" : ", invalid") +
+                                            "\r\nSequence number: " + tcpPacket.SequenceNumber.ToString() +
+                                            "\r\nAcknowledgment number: " + tcpPacket.AcknowledgmentNumber + (tcpPacket.Ack ? ", valid" : ", invalid") +
+                                            // flags
+                                            "\r\nSynchronization (SYN) flag: " + (tcpPacket.Syn ? "True" : "False") + // first packet from sender
+                                            "\r\nAcknowledgement (ACK) flag: " + (tcpPacket.Ack ? "True" : "False") + // indicates if the AcknowledgmentNumber is valid
+                                            "\r\nFinish (FIN) flag: " + (tcpPacket.Fin ? "True" : "False") + // finish packet
+                                            "\r\nUrgent (URG) flag: " + (tcpPacket.Urg ? "valid" : "invalid") +
+                                            "\r\nPush (PSH) flag: " + (tcpPacket.Psh ? "True" : "False") + // push 1 = the receiver should pass the data to the app immidiatly, don't buffer it
+                                            "\r\nReset (RST) flag: " + (tcpPacket.Rst ? "True" : "False") + // reset 1 is to abort existing connection
+                                                                                                            // SYN indicates the sequence numbers should be synchronized between the sender and receiver to initiate a connection
+                                                                                                            // closing the connection with a deal, host_A sends FIN to host_B, B responds with ACK
+                                                                                                            // FIN flag indicates the sender is finished sending
+                                            "\r\nExplicit Congestion Notification (ECN) flag: " + (tcpPacket.ECN ? "True" : "False") + // send by router or gateway for tell traffic crowded
+                                            "\r\nCongestion window reduced (CWR) flag: " + (tcpPacket.CWR ? "True" : "False") + // send by host to router or gateway for tell receive ECN flag
+                                            "\r\nNS flag: " + (tcpPacket.NS ? "True" : "False"));
+                            break;
+
+                        case "UDP":
+
+                            var udpPacket = (UdpPacket)packet.Extract(typeof(UdpPacket));
+                            if (udpPacket != null)
+                            {
+                                int UDPsrcPort = udpPacket.SourcePort;
+                                int UDPdstPort = udpPacket.DestinationPort;
+                                var UDPchecksum = udpPacket.Checksum;
+
+                                this.richTextBoxDetail.AppendText("Packet number: " + key +
+                                                " Type: UDP" +
+                                                "\r\nSource port: " + UDPsrcPort +
+                                                "\r\nDestination port: " + UDPdstPort +
+                                                "\r\nChecksum: " + UDPchecksum.ToString() + " valid: " + udpPacket.ValidChecksum +
+                                                "\r\nValid UDP checksum: " + udpPacket.ValidUDPChecksum);
+                            }
+                            break;
+
+                        case "ARP":
+
+                            var arpPacket = (ARPPacket)packet.Extract(typeof(ARPPacket));
+                            if (arpPacket != null)
+                            {
+                                System.Net.IPAddress senderAddress = arpPacket.SenderProtocolAddress;
+                                System.Net.IPAddress targerAddress = arpPacket.TargetProtocolAddress;
+                                System.Net.NetworkInformation.PhysicalAddress senderHardwareAddress = arpPacket.SenderHardwareAddress;
+                                System.Net.NetworkInformation.PhysicalAddress targerHardwareAddress = arpPacket.TargetHardwareAddress;
+
+                                this.richTextBoxDetail.AppendText("Packet number: " + key +
+                                                " Type: ARP" +
+                                                "\r\nHardware address length:" + arpPacket.HardwareAddressLength +
+                                                "\r\nProtocol address length: " + arpPacket.ProtocolAddressLength +
+                                                "\r\nOperation: " + arpPacket.Operation.ToString() + // ARP request or ARP reply ARP_OP_REQ_CODE, ARP_OP_REP_CODE
+                                                "\r\nSender protocol address: " + senderAddress +
+                                                "\r\nTarget protocol address: " + targerAddress +
+                                                "\r\nSender hardware address: " + senderHardwareAddress +
+                                                "\r\nTarget hardware address: " + targerHardwareAddress);
+                            }
+
+                            break;
+                        case "ICMP":
+
+                            var icmpPacket = (ICMPv4Packet)packet.Extract(typeof(ICMPv4Packet));
+                            if (icmpPacket != null)
+                            {
+                                this.richTextBoxDetail.AppendText("Packet number: " + key +
+                                                " Type: ICMP v4" +
+                                                "\r\nType Code: 0x" + icmpPacket.TypeCode.ToString("x") +
+                                                "\r\nChecksum: " + icmpPacket.Checksum.ToString("x") +
+                                                "\r\nID: 0x" + icmpPacket.ID.ToString("x") +
+                                                "\r\nSequence number: " + icmpPacket.Sequence.ToString("x"));
+                            }
+                            break;
+                    }
+
+                    this.richTextBoxDetail.AppendText(Environment.NewLine);
                 }
             }
             catch (Exception ex)

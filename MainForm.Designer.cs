@@ -46,7 +46,7 @@ namespace IPScanner
             this.txt_from = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.richTextBox = new System.Windows.Forms.RichTextBox();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.listViewPacket = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -54,6 +54,8 @@ namespace IPScanner
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.richTextBoxHex = new System.Windows.Forms.RichTextBox();
+            this.richTextBoxDetail = new System.Windows.Forms.RichTextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.textBoxFilter = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -64,20 +66,24 @@ namespace IPScanner
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView = new System.Windows.Forms.TreeView();
+            this.listViewPort = new System.Windows.Forms.ListView();
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.logConsole = new System.Windows.Forms.RichTextBox();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.scanPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.capturePacketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.listViewPort = new System.Windows.Forms.ListView();
-            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -87,10 +93,10 @@ namespace IPScanner
             this.tabControl.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -247,17 +253,23 @@ namespace IPScanner
             this.tabPage2.Text = "Packet Capture";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // richTextBox
+            // splitContainer2
             // 
-            this.richTextBox.BackColor = System.Drawing.Color.Black;
-            this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.richTextBox.ForeColor = System.Drawing.Color.Lime;
-            this.richTextBox.Location = new System.Drawing.Point(0, 0);
-            this.richTextBox.Name = "richTextBox";
-            this.richTextBox.Size = new System.Drawing.Size(1150, 192);
-            this.richTextBox.TabIndex = 6;
-            this.richTextBox.Text = "";
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(3, 73);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.listViewPacket);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
+            this.splitContainer2.Size = new System.Drawing.Size(1150, 391);
+            this.splitContainer2.SplitterDistance = 195;
+            this.splitContainer2.TabIndex = 7;
             // 
             // listViewPacket
             // 
@@ -318,6 +330,29 @@ namespace IPScanner
             this.columnHeader6.Text = "Length";
             this.columnHeader6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.columnHeader6.Width = 80;
+            // 
+            // richTextBoxHex
+            // 
+            this.richTextBoxHex.BackColor = System.Drawing.Color.Blue;
+            this.richTextBoxHex.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBoxHex.ForeColor = System.Drawing.Color.White;
+            this.richTextBoxHex.Location = new System.Drawing.Point(0, 0);
+            this.richTextBoxHex.Name = "richTextBoxHex";
+            this.richTextBoxHex.Size = new System.Drawing.Size(763, 192);
+            this.richTextBoxHex.TabIndex = 7;
+            this.richTextBoxHex.Text = "";
+            // 
+            // richTextBoxDetail
+            // 
+            this.richTextBoxDetail.BackColor = System.Drawing.Color.Black;
+            this.richTextBoxDetail.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBoxDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.richTextBoxDetail.ForeColor = System.Drawing.Color.Lime;
+            this.richTextBoxDetail.Location = new System.Drawing.Point(0, 0);
+            this.richTextBoxDetail.Name = "richTextBoxDetail";
+            this.richTextBoxDetail.Size = new System.Drawing.Size(383, 192);
+            this.richTextBoxDetail.TabIndex = 6;
+            this.richTextBoxDetail.Text = "";
             // 
             // panel2
             // 
@@ -425,6 +460,41 @@ namespace IPScanner
             this.treeView.TabIndex = 0;
             this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
             // 
+            // listViewPort
+            // 
+            this.listViewPort.AllowColumnReorder = true;
+            this.listViewPort.AutoArrange = false;
+            this.listViewPort.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader9,
+            this.columnHeader7,
+            this.columnHeader8});
+            this.listViewPort.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewPort.FullRowSelect = true;
+            this.listViewPort.GridLines = true;
+            this.listViewPort.HideSelection = false;
+            this.listViewPort.Location = new System.Drawing.Point(0, 0);
+            this.listViewPort.Margin = new System.Windows.Forms.Padding(2);
+            this.listViewPort.MultiSelect = false;
+            this.listViewPort.Name = "listViewPort";
+            this.listViewPort.Size = new System.Drawing.Size(763, 461);
+            this.listViewPort.TabIndex = 6;
+            this.listViewPort.UseCompatibleStateImageBehavior = false;
+            this.listViewPort.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "Number";
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "IP Address";
+            this.columnHeader7.Width = 70;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Port";
+            this.columnHeader8.Width = 100;
+            // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabPage1);
@@ -482,58 +552,22 @@ namespace IPScanner
             this.capturePacketToolStripMenuItem.Text = "Capture Packet";
             this.capturePacketToolStripMenuItem.Click += new System.EventHandler(this.capturePacketToolStripMenuItem_Click);
             // 
-            // splitContainer2
+            // splitContainer3
             // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(3, 73);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
             // 
-            // splitContainer2.Panel1
+            // splitContainer3.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.listViewPacket);
+            this.splitContainer3.Panel1.Controls.Add(this.richTextBoxDetail);
             // 
-            // splitContainer2.Panel2
+            // splitContainer3.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.richTextBox);
-            this.splitContainer2.Size = new System.Drawing.Size(1150, 391);
-            this.splitContainer2.SplitterDistance = 195;
-            this.splitContainer2.TabIndex = 7;
-            // 
-            // listViewPort
-            // 
-            this.listViewPort.AllowColumnReorder = true;
-            this.listViewPort.AutoArrange = false;
-            this.listViewPort.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader9,
-            this.columnHeader7,
-            this.columnHeader8});
-            this.listViewPort.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewPort.FullRowSelect = true;
-            this.listViewPort.GridLines = true;
-            this.listViewPort.HideSelection = false;
-            this.listViewPort.Location = new System.Drawing.Point(0, 0);
-            this.listViewPort.Margin = new System.Windows.Forms.Padding(2);
-            this.listViewPort.MultiSelect = false;
-            this.listViewPort.Name = "listViewPort";
-            this.listViewPort.Size = new System.Drawing.Size(763, 461);
-            this.listViewPort.TabIndex = 6;
-            this.listViewPort.UseCompatibleStateImageBehavior = false;
-            this.listViewPort.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Text = "IP Address";
-            this.columnHeader7.Width = 70;
-            // 
-            // columnHeader8
-            // 
-            this.columnHeader8.Text = "Port";
-            this.columnHeader8.Width = 100;
-            // 
-            // columnHeader9
-            // 
-            this.columnHeader9.Text = "Number";
+            this.splitContainer3.Panel2.Controls.Add(this.richTextBoxHex);
+            this.splitContainer3.Size = new System.Drawing.Size(1150, 192);
+            this.splitContainer3.SplitterDistance = 383;
+            this.splitContainer3.TabIndex = 8;
             // 
             // MainForm
             // 
@@ -545,7 +579,7 @@ namespace IPScanner
             this.Controls.Add(this.statusStrip);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "IP Scanner";
+            this.Text = "Network Tools";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.statusStrip.ResumeLayout(false);
@@ -553,6 +587,10 @@ namespace IPScanner
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
@@ -563,10 +601,10 @@ namespace IPScanner
             this.tabControl.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.contextMenuStrip.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -613,12 +651,14 @@ namespace IPScanner
         private System.Windows.Forms.Button buttonStop;
         private System.Windows.Forms.TextBox textBoxFilter;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.RichTextBox richTextBox;
+        private System.Windows.Forms.RichTextBox richTextBoxDetail;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ListView listViewPort;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.RichTextBox richTextBoxHex;
+        private System.Windows.Forms.SplitContainer splitContainer3;
     }
 }
 
