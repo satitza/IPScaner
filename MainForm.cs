@@ -131,7 +131,7 @@ namespace IPScanner
                         {
                             this.btn_scan.Enabled = false;
                             this.btn_scan.Text = "Scanning...";
-                            this.dataGridView.DataSource = null;
+                            this.listViewPort.Items.Clear();
                             this.toolStripStatusLabel2.Text = "0";
 
                             /*---------------------------------------------------------------------------------------------------*/
@@ -212,8 +212,19 @@ namespace IPScanner
                     this.logConsole.AppendText(Environment.NewLine);
 
                     this.ScanPortState = true;
-                    this.dataGridView.DataSource = null;
-                    this.dataGridView.DataSource = await this.IPScannerService.ScanPort(this.treeView.SelectedNode.Text.Trim());
+                    this.listViewPort.Items.Clear();
+                    ICollection<PortInformationModel> ports = await this.IPScannerService.ScanPort(this.treeView.SelectedNode.Text.Trim());
+
+                    int number = 1;
+                    foreach (var model in ports)
+                    {
+                        ListViewItem item = new ListViewItem(number.ToString());
+                        item.SubItems.Add(model.IPAddress);
+                        item.SubItems.Add(String.Format("{0}  [{1}]", model.PortNumber, model.PortDetail));
+                        Action action = () => this.listViewPort.Items.Add(item);
+                        this.listViewPort.Invoke(action);
+                        number++;
+                    }
 
                     foreach (string log in this.listLogs)
                     {
@@ -231,8 +242,7 @@ namespace IPScanner
             finally
             {
                 this.ScanPortState = false;
-                ComponentUtils.DataGridViewCellAutoSize(this.dataGridView);
-
+                ComponentUtils.ListViewCellAutoSize(this.listViewPort);
                 this.logConsole.AppendText(String.Format("[{0}] Port scan success.", DateTime.Now));
                 this.logConsole.AppendText(Environment.NewLine);
             }
@@ -350,7 +360,7 @@ namespace IPScanner
                         if (MessageBoxUtils.Question("Restart capture"))
                         {
                             packetNumber = 1;
-                            this.listView.Items.Clear();
+                            this.listViewPacket.Items.Clear();
                             this.CapturePacketLists.Clear();
 
                             this.sniffing = new Thread(new ThreadStart(sniffing_Proccess));
@@ -405,7 +415,6 @@ namespace IPScanner
             }
         }
 
-
         /// <summary>
         /// Prints the time and length of each received packet
         /// </summary>
@@ -420,37 +429,46 @@ namespace IPScanner
             string time_str = (time.Hour + 1) + ":" + time.Minute + ":" + time.Second + ":" + time.Millisecond;
             string length = e.Packet.Data.Length.ToString();
 
-            // add to the list
-            CapturePacketLists.Add(packetNumber, packet);
-
-            if (ipPacket != null)
+            Packet hasPacket;
+            bool hasPacketNumber = CapturePacketLists.TryGetValue(packetNumber, out hasPacket);
+            if (!hasPacketNumber)
             {
-                string source_port = String.Empty;
-                string destination_port = String.Empty;
+                // add to the list
+                CapturePacketLists.Add(packetNumber, packet);
 
-                if (tcpPacket != null)
+                if (ipPacket != null)
                 {
-                    source_port = tcpPacket.SourcePort.ToString();
-                    destination_port = tcpPacket.DestinationPort.ToString();
+                    string source_port = String.Empty;
+                    string destination_port = String.Empty;
+
+                    if (tcpPacket != null)
+                    {
+                        source_port = tcpPacket.SourcePort.ToString();
+                        destination_port = tcpPacket.DestinationPort.ToString();
+                    }
+
+                    System.Net.IPAddress srcIp = ipPacket.SourceAddress;
+                    System.Net.IPAddress dstIp = ipPacket.DestinationAddress;
+                    string protocol_type = ipPacket.Protocol.ToString();
+                    string sourceIP = String.Format("{0}:{1}", srcIp.ToString(), source_port);
+                    string destinationIP = String.Format("{0}:{1}", dstIp.ToString(), destination_port);
+
+                    ListViewItem item = new ListViewItem(packetNumber.ToString());
+                    item.SubItems.Add(time_str);
+                    item.SubItems.Add(sourceIP);
+                    item.SubItems.Add(destinationIP);
+                    item.SubItems.Add(protocol_type);
+                    item.SubItems.Add(length);
+
+                    Action action = () => listViewPacket.Items.Add(item);
+                    listViewPacket.Invoke(action);
+                    packetNumber++;
+
                 }
-
-                System.Net.IPAddress srcIp = ipPacket.SourceAddress;
-                System.Net.IPAddress dstIp = ipPacket.DestinationAddress;
-                string protocol_type = ipPacket.Protocol.ToString();
-                string sourceIP = String.Format("{0}:{1}", srcIp.ToString(), source_port);
-                string destinationIP = String.Format("{0}:{1}", dstIp.ToString(), destination_port);
-
-                ListViewItem item = new ListViewItem(packetNumber.ToString());
-                item.SubItems.Add(time_str);
-                item.SubItems.Add(sourceIP);
-                item.SubItems.Add(destinationIP);
-                item.SubItems.Add(protocol_type);
-                item.SubItems.Add(length);
-
-                Action action = () => listView.Items.Add(item);
-                listView.Invoke(action);
-                ++packetNumber;
-
+            }
+            else
+            {
+                packetNumber++;
             }
         }
 
@@ -468,6 +486,21 @@ namespace IPScanner
                     this.richTextBox.Clear();
                     this.richTextBox.AppendText(packet.PrintHex());
                     this.richTextBox.AppendText(Environment.NewLine);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            try
+            {
+                if (this.sniffing != null && this.sniffing.IsAlive)
+                {
+                    this.sniffing.Abort();
                 }
             }
             catch (Exception ex)
