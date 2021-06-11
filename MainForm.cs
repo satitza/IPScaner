@@ -12,6 +12,10 @@ using System.Windows.Forms;
 using IPScanner.Models;
 using IPScanner.Services;
 using IPScanner.Services.Imples;
+using System.Threading;
+using SharpPcap.LibPcap;
+using SharpPcap;
+using PacketDotNet;
 
 namespace IPScanner
 {
@@ -238,9 +242,233 @@ namespace IPScanner
         {
             try
             {
-                CaptureForm captureForm = new CaptureForm();
-                captureForm.IPAddress = this.treeView.SelectedNode.Text;
-                captureForm.ShowDialog();
+                this.tabControl.SelectedTab = this.tabPage2;
+                string[] ipArr = this.treeView.SelectedNode.Text.Split(' ');
+                this.textBoxFilter.Text = String.Format("host {0}", ipArr[0]);
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
+        }
+
+        /******************************************************************************************************************************************/
+
+        private Thread sniffing;
+
+        private int packetNumber = 1;
+
+        private LibPcapLiveDevice device;
+
+        private ICollection<LibPcapLiveDevice> devices;
+
+        private bool CaptureProcessStatus = false;
+
+        Dictionary<int, Packet> CapturePacketLists;
+
+        private void tabControl_Selected(object sender, TabControlEventArgs e)
+        {
+            // selected capture packet tab
+            if (this.tabControl.SelectedIndex == 1)
+            {
+                if (this.devices == null)
+                {
+                    this.devices = new List<LibPcapLiveDevice>();
+                }
+
+                if (this.CapturePacketLists == null)
+                {
+                    this.CapturePacketLists = new Dictionary<int, Packet>();
+                }
+
+                this.InitialInterfaceCombobox();
+            }
+        }
+
+        public void InitialInterfaceCombobox()
+        {
+            try
+            {
+                if (this.devices.Count > 0)
+                {
+
+                }
+                else
+                {
+                    foreach (LibPcapLiveDevice device in LibPcapLiveDeviceList.Instance)
+                    {
+                        if (device.Interface.FriendlyName != null)
+                        {
+                            this.devices.Add(device);
+                        }
+                    }
+
+                    foreach (LibPcapLiveDevice deviceName in this.devices)
+                    {
+                        this.comboBoxInterface.Items.Add(deviceName.Interface.FriendlyName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
+        }
+
+        private void buttonCapture_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(this.comboBoxInterface.Text))
+                {
+                    MessageBoxUtils.Warning("กรุณาเลือก Interface");
+                }
+                else
+                {
+                    this.device = this.devices.ToArray()[this.comboBoxInterface.SelectedIndex];
+
+                    //Register our handler function to the 'packet arrival' event
+                    this.device.OnPacketArrival +=
+                        new PacketArrivalEventHandler(device_OnPacketArrival);
+
+                    // start capture
+                    if (this.CaptureProcessStatus == false)
+                    {
+                        if (MessageBoxUtils.Question("Start Capture"))
+                        {
+                            this.sniffing = new Thread(new ThreadStart(sniffing_Proccess));
+                            this.sniffing.Start();
+
+                            this.CaptureProcessStatus = true;
+                            this.buttonStart.Enabled = false;
+                            this.buttonStop.Enabled = true;
+                        }
+                    }
+                    // restart capture
+                    else if (this.CaptureProcessStatus)
+                    {
+                        if (MessageBoxUtils.Question("Restart capture"))
+                        {
+                            packetNumber = 1;
+                            this.listView.Items.Clear();
+                            this.CapturePacketLists.Clear();
+
+                            this.sniffing = new Thread(new ThreadStart(sniffing_Proccess));
+                            this.sniffing.Start();
+
+                            this.CaptureProcessStatus = true;
+                            this.buttonStart.Enabled = false;
+                            this.buttonStop.Enabled = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MessageBoxUtils.Question("Stop Capture"))
+                {
+                    this.sniffing.Abort();
+                    this.device.StopCapture();
+                    this.device.Close();
+
+                    this.buttonStart.Enabled = true;
+                    this.buttonStop.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private void sniffing_Proccess()
+        {
+            try
+            {
+                // Open the device for capturing
+                int readTimeoutMilliseconds = 1000;
+                this.device.Open(DeviceMode.Promiscuous, readTimeoutMilliseconds);
+                this.device.Filter = this.textBoxFilter.Text.Trim();
+                this.device.Capture();
+            }
+            catch (PcapException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Prints the time and length of each received packet
+        /// </summary>
+        private void device_OnPacketArrival(object sender, CaptureEventArgs e)
+        {
+            var packet = PacketDotNet.Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
+            var ipPacket = (IpPacket)packet.Extract(typeof(IpPacket));
+            var tcpPacket = (TcpPacket)packet.Extract(typeof(TcpPacket));
+
+            // start extracting properties for the listview 
+            DateTime time = e.Packet.Timeval.Date;
+            string time_str = (time.Hour + 1) + ":" + time.Minute + ":" + time.Second + ":" + time.Millisecond;
+            string length = e.Packet.Data.Length.ToString();
+
+            // add to the list
+            CapturePacketLists.Add(packetNumber, packet);
+
+            if (ipPacket != null)
+            {
+                string source_port = String.Empty;
+                string destination_port = String.Empty;
+
+                if (tcpPacket != null)
+                {
+                    source_port = tcpPacket.SourcePort.ToString();
+                    destination_port = tcpPacket.DestinationPort.ToString();
+                }
+
+                System.Net.IPAddress srcIp = ipPacket.SourceAddress;
+                System.Net.IPAddress dstIp = ipPacket.DestinationAddress;
+                string protocol_type = ipPacket.Protocol.ToString();
+                string sourceIP = String.Format("{0}:{1}", srcIp.ToString(), source_port);
+                string destinationIP = String.Format("{0}:{1}", dstIp.ToString(), destination_port);
+
+                ListViewItem item = new ListViewItem(packetNumber.ToString());
+                item.SubItems.Add(time_str);
+                item.SubItems.Add(sourceIP);
+                item.SubItems.Add(destinationIP);
+                item.SubItems.Add(protocol_type);
+                item.SubItems.Add(length);
+
+                Action action = () => listView.Items.Add(item);
+                listView.Invoke(action);
+                ++packetNumber;
+
+            }
+        }
+
+        private void listView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            try
+            {
+                Packet packet;
+                string protocol = e.Item.SubItems[4].Text;
+                int key = Int32.Parse(e.Item.SubItems[0].Text);
+                bool getPacket = CapturePacketLists.TryGetValue(key, out packet);
+
+                if (getPacket)
+                {
+                    this.richTextBox.Clear();
+                    this.richTextBox.AppendText(packet.PrintHex());
+                    this.richTextBox.AppendText(Environment.NewLine);
+                }
             }
             catch (Exception ex)
             {

@@ -14,5 +14,16 @@ namespace IPScanner.Utility
                 }
             }
         }
+
+        public static void ListViewCellAutoSize(ListView listView)
+        {
+            if (listView.Columns.Count > 0)
+            {
+                for (int i = 0; i <= listView.Columns.Count - 1; i++)
+                {
+                    listView.Columns[i].Width = -2;
+                }
+            }
+        }
     }
 }
