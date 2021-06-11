@@ -63,12 +63,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CaptureForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CaptureForm.Designer.cs">
-      <DependentUpon>CaptureForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,9 +79,6 @@
     <Compile Include="Utility\ComponentUtils.cs" />
     <Compile Include="Utility\MessageBoxUtils.cs" />
     <Compile Include="Utility\StringUtils.cs" />
-    <EmbeddedResource Include="CaptureForm.resx">
-      <DependentUpon>CaptureForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
