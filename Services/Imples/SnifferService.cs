@@ -19,13 +19,23 @@ namespace IPScanner.Services.Imples
             {
                 this.devices = new List<LibPcapLiveDevice>();
             }
+
+            this.GetAllDevice();
         }
 
         public ICollection<LibPcapLiveDevice> GetAllDevice()
         {
             try
             {
-                foreach (LibPcapLiveDevice device in LibPcapLiveDeviceList.Instance)
+                LibPcapLiveDeviceList pcapLiveDevices = LibPcapLiveDeviceList.Instance;
+                pcapLiveDevices.Refresh();
+
+                if (this.devices.Count > 0)
+                {
+                    this.devices.Clear();
+                }
+
+                foreach (LibPcapLiveDevice device in pcapLiveDevices)
                 {
                     if (device.Interface.FriendlyName != null)
                     {

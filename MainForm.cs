@@ -307,20 +307,24 @@ namespace IPScanner
             {
                 if (this.comboBoxInterface.Items.Count > 0)
                 {
+                    this.comboBoxInterface.Items.Clear();
+                }
 
-                }
-                else
+                foreach (LibPcapLiveDevice deviceName in this.SnifferService.GetAllDevice())
                 {
-                    foreach (LibPcapLiveDevice deviceName in this.SnifferService.GetAllDevice())
-                    {
-                        this.comboBoxInterface.Items.Add(deviceName.Interface.FriendlyName);
-                    }
+                    this.comboBoxInterface.Items.Add(deviceName.Interface.FriendlyName);
                 }
+
             }
             catch (Exception ex)
             {
                 MessageBoxUtils.Error(ex.Message);
             }
+        }
+
+        private void comboBoxInterface_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.device = this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex);
         }
 
         private void buttonCapture_Click(object sender, EventArgs e)
@@ -333,14 +337,13 @@ namespace IPScanner
                 }
                 else
                 {
-                    this.device = this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex);
-
                     //Register our handler function to the 'packet arrival' event
                     this.device.OnPacketArrival +=
                         new PacketArrivalEventHandler(device_OnPacketArrival);
 
                     this.richTextBoxDetail.Clear();
                     this.richTextBoxHex.Clear();
+                    this.comboBoxInterface.Enabled = false;
 
                     // start capture
                     if (this.CaptureProcessStatus == false)
@@ -396,6 +399,7 @@ namespace IPScanner
                     this.device.StopCapture();
                     this.device.Close();
 
+                    this.comboBoxInterface.Enabled = true;
                     this.buttonStart.Enabled = true;
                     this.buttonStop.Enabled = false;
 
@@ -616,6 +620,28 @@ namespace IPScanner
             }
         }
 
+        private void buttonFilterHelp_Click(object sender, EventArgs e)
+        {
+            string message = String.Format(
+                "host 172.18.5.4\r\n" +
+                "net 192.168.0.0/24\r\n" +
+                "net 192.168.0.0 mask 255.255.255.0\r\n" +
+                "src net 192.168.0.0/24\r\n" +
+                "src net 192.168.0.0 mask 255.255.255.0\r\n" +
+                "dst net 192.168.0.0/24\r\n" +
+                "dst net 192.168.0.0 mask 255.255.255.0\r\n" +
+                "port 53\r\n" +
+                "host www.example.com and not (port 80 or port 25)\r\n" +
+                "host www.example.com and not port 80 and not port 25\r\n" +
+                "port not 53 and not arp\r\n" +
+                "tcp portrange 1501-1549\r\n" +
+                "ip (IPv4 Only)\r\n" +
+                "not broadcast and not multicast\r\n"
+            );
+
+            MessageBoxUtils.Information(message, "Filter example");
+        }
+
         /************************************************************************************************************************************************/
 
         private ICollection<string> victimList = new List<string>();
@@ -646,6 +672,11 @@ namespace IPScanner
                             this.treeView.SelectedNode.ForeColor = Color.Red;
                             // MessageBox.Show(this.NetworkService.GetMacByIP(ipArr[0]));
                             // loop arp sproof send victim list to parameter
+
+                            string gw_ip = this.NetworkService.GetGatewayIP(this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex).Interface.FriendlyName).ToString();
+                            MessageBox.Show(gw_ip);
+
+                            //MessageBox.Show(this.NetworkService.GetGatewayMAC(this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex).Interface.FriendlyName).ToString());
                         }
                         else
                         {
@@ -676,5 +707,7 @@ namespace IPScanner
                 MessageBoxUtils.Error(ex.Message);
             }
         }
+
+
     }
 }

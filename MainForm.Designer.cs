@@ -54,8 +54,9 @@ namespace IPScanner
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.richTextBoxHex = new System.Windows.Forms.RichTextBox();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.richTextBoxDetail = new System.Windows.Forms.RichTextBox();
+            this.richTextBoxHex = new System.Windows.Forms.RichTextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.textBoxFilter = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -76,8 +77,8 @@ namespace IPScanner
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.scanPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.capturePacketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.netcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buttonFilterHelp = new System.Windows.Forms.Button();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -85,6 +86,10 @@ namespace IPScanner
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -94,10 +99,6 @@ namespace IPScanner
             this.tabControl.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
-            this.splitContainer3.Panel1.SuspendLayout();
-            this.splitContainer3.Panel2.SuspendLayout();
-            this.splitContainer3.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -332,16 +333,22 @@ namespace IPScanner
             this.columnHeader6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.columnHeader6.Width = 80;
             // 
-            // richTextBoxHex
+            // splitContainer3
             // 
-            this.richTextBoxHex.BackColor = System.Drawing.Color.Blue;
-            this.richTextBoxHex.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBoxHex.ForeColor = System.Drawing.Color.White;
-            this.richTextBoxHex.Location = new System.Drawing.Point(0, 0);
-            this.richTextBoxHex.Name = "richTextBoxHex";
-            this.richTextBoxHex.Size = new System.Drawing.Size(763, 192);
-            this.richTextBoxHex.TabIndex = 7;
-            this.richTextBoxHex.Text = "";
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.richTextBoxDetail);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.richTextBoxHex);
+            this.splitContainer3.Size = new System.Drawing.Size(1150, 192);
+            this.splitContainer3.SplitterDistance = 383;
+            this.splitContainer3.TabIndex = 8;
             // 
             // richTextBoxDetail
             // 
@@ -355,9 +362,21 @@ namespace IPScanner
             this.richTextBoxDetail.TabIndex = 6;
             this.richTextBoxDetail.Text = "";
             // 
+            // richTextBoxHex
+            // 
+            this.richTextBoxHex.BackColor = System.Drawing.Color.Blue;
+            this.richTextBoxHex.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBoxHex.ForeColor = System.Drawing.Color.White;
+            this.richTextBoxHex.Location = new System.Drawing.Point(0, 0);
+            this.richTextBoxHex.Name = "richTextBoxHex";
+            this.richTextBoxHex.Size = new System.Drawing.Size(763, 192);
+            this.richTextBoxHex.TabIndex = 7;
+            this.richTextBoxHex.Text = "";
+            // 
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel2.Controls.Add(this.buttonFilterHelp);
             this.panel2.Controls.Add(this.textBoxFilter);
             this.panel2.Controls.Add(this.label6);
             this.panel2.Controls.Add(this.buttonStop);
@@ -374,7 +393,7 @@ namespace IPScanner
             // 
             this.textBoxFilter.Location = new System.Drawing.Point(105, 36);
             this.textBoxFilter.Name = "textBoxFilter";
-            this.textBoxFilter.Size = new System.Drawing.Size(320, 20);
+            this.textBoxFilter.Size = new System.Drawing.Size(597, 20);
             this.textBoxFilter.TabIndex = 5;
             // 
             // label6
@@ -389,7 +408,7 @@ namespace IPScanner
             // buttonStop
             // 
             this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(504, 10);
+            this.buttonStop.Location = new System.Drawing.Point(633, 10);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(70, 23);
             this.buttonStop.TabIndex = 3;
@@ -399,7 +418,7 @@ namespace IPScanner
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(431, 10);
+            this.buttonStart.Location = new System.Drawing.Point(560, 10);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(70, 23);
             this.buttonStart.TabIndex = 2;
@@ -412,8 +431,9 @@ namespace IPScanner
             this.comboBoxInterface.FormattingEnabled = true;
             this.comboBoxInterface.Location = new System.Drawing.Point(105, 11);
             this.comboBoxInterface.Name = "comboBoxInterface";
-            this.comboBoxInterface.Size = new System.Drawing.Size(320, 21);
+            this.comboBoxInterface.Size = new System.Drawing.Size(449, 21);
             this.comboBoxInterface.TabIndex = 1;
+            this.comboBoxInterface.SelectedIndexChanged += new System.EventHandler(this.comboBoxInterface_SelectedIndexChanged);
             // 
             // label5
             // 
@@ -538,7 +558,7 @@ namespace IPScanner
             this.capturePacketToolStripMenuItem,
             this.netcutToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(181, 92);
+            this.contextMenuStrip.Size = new System.Drawing.Size(155, 70);
             // 
             // scanPortToolStripMenuItem
             // 
@@ -554,29 +574,22 @@ namespace IPScanner
             this.capturePacketToolStripMenuItem.Text = "Capture Packet";
             this.capturePacketToolStripMenuItem.Click += new System.EventHandler(this.capturePacketToolStripMenuItem_Click);
             // 
-            // splitContainer3
-            // 
-            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer3.Name = "splitContainer3";
-            // 
-            // splitContainer3.Panel1
-            // 
-            this.splitContainer3.Panel1.Controls.Add(this.richTextBoxDetail);
-            // 
-            // splitContainer3.Panel2
-            // 
-            this.splitContainer3.Panel2.Controls.Add(this.richTextBoxHex);
-            this.splitContainer3.Size = new System.Drawing.Size(1150, 192);
-            this.splitContainer3.SplitterDistance = 383;
-            this.splitContainer3.TabIndex = 8;
-            // 
             // netcutToolStripMenuItem
             // 
             this.netcutToolStripMenuItem.Name = "netcutToolStripMenuItem";
-            this.netcutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.netcutToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.netcutToolStripMenuItem.Text = "Netcut";
             this.netcutToolStripMenuItem.Click += new System.EventHandler(this.netcutToolStripMenuItem_Click);
+            // 
+            // buttonFilterHelp
+            // 
+            this.buttonFilterHelp.Location = new System.Drawing.Point(14, 33);
+            this.buttonFilterHelp.Name = "buttonFilterHelp";
+            this.buttonFilterHelp.Size = new System.Drawing.Size(44, 23);
+            this.buttonFilterHelp.TabIndex = 6;
+            this.buttonFilterHelp.Text = "HELP";
+            this.buttonFilterHelp.UseVisualStyleBackColor = true;
+            this.buttonFilterHelp.Click += new System.EventHandler(this.buttonFilterHelp_Click);
             // 
             // MainForm
             // 
@@ -600,6 +613,10 @@ namespace IPScanner
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
@@ -610,10 +627,6 @@ namespace IPScanner
             this.tabControl.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.contextMenuStrip.ResumeLayout(false);
-            this.splitContainer3.Panel1.ResumeLayout(false);
-            this.splitContainer3.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
-            this.splitContainer3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -669,6 +682,7 @@ namespace IPScanner
         private System.Windows.Forms.RichTextBox richTextBoxHex;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.ToolStripMenuItem netcutToolStripMenuItem;
+        private System.Windows.Forms.Button buttonFilterHelp;
     }
 }
 
