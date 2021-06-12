@@ -27,6 +27,8 @@ namespace IPScanner
 
         private IIPScannerService IPScannerService;
 
+        private ISnifferService SnifferService;
+
         private INetworkService NetworkService;
 
         private bool ScanPortState { get; set; } = false;
@@ -42,6 +44,7 @@ namespace IPScanner
             {
                 this.ScanOption = new ScanOptionModel();
                 this.IPScannerService = new IPScannerService(this.listLogs);
+                this.SnifferService = new SnifferService();
                 this.NetworkService = new NetworkService();
             }
             catch (Exception ex)
@@ -302,21 +305,13 @@ namespace IPScanner
         {
             try
             {
-                if (this.devices.Count > 0)
+                if (this.comboBoxInterface.Items.Count > 0)
                 {
 
                 }
                 else
                 {
-                    foreach (LibPcapLiveDevice device in LibPcapLiveDeviceList.Instance)
-                    {
-                        if (device.Interface.FriendlyName != null)
-                        {
-                            this.devices.Add(device);
-                        }
-                    }
-
-                    foreach (LibPcapLiveDevice deviceName in this.devices)
+                    foreach (LibPcapLiveDevice deviceName in this.SnifferService.GetAllDevice())
                     {
                         this.comboBoxInterface.Items.Add(deviceName.Interface.FriendlyName);
                     }
@@ -338,7 +333,7 @@ namespace IPScanner
                 }
                 else
                 {
-                    this.device = this.devices.ToArray()[this.comboBoxInterface.SelectedIndex];
+                    this.device = this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex);
 
                     //Register our handler function to the 'packet arrival' event
                     this.device.OnPacketArrival +=
@@ -649,7 +644,8 @@ namespace IPScanner
                         {
                             this.victimList.Add(ipArr[0]);
                             this.treeView.SelectedNode.ForeColor = Color.Red;
-                            MessageBox.Show(this.NetworkService.GetMacByIP(ipArr[0]));
+
+                            //MessageBox.Show(this.NetworkService.GetMacByIP(ipArr[0]));
                             // loop arp sproof send victim list to parameter
                         }
                         else

@@ -77,7 +77,9 @@
     <Compile Include="Services\IIPScannerService.cs" />
     <Compile Include="Services\Imples\IPScannerService.cs" />
     <Compile Include="Services\Imples\NetworkService.cs" />
+    <Compile Include="Services\Imples\SnifferService.cs" />
     <Compile Include="Services\INetworkService.cs" />
+    <Compile Include="Services\ISnifferService.cs" />
     <Compile Include="Utility\ComponentUtils.cs" />
     <Compile Include="Utility\MessageBoxUtils.cs" />
     <Compile Include="Utility\StringUtils.cs" />
