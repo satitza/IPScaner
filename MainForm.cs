@@ -33,6 +33,8 @@ namespace IPScanner
 
         private INetworkService NetworkService;
 
+        private IARPSproofService ARPSproofService;
+
         private bool ScanPortState { get; set; } = false;
 
         public MainForm()
@@ -48,6 +50,7 @@ namespace IPScanner
                 this.IPScannerService = new IPScannerService(this.listLogs);
                 this.SnifferService = new SnifferService();
                 this.NetworkService = new NetworkService();
+                this.ARPSproofService = new ARPSproofService();
             }
             catch (Exception ex)
             {
@@ -284,6 +287,8 @@ namespace IPScanner
 
         Dictionary<int, Packet> CapturePacketLists;
 
+        private PhysicalAddress gatewayMac;
+
         private void tabControl_Selected(object sender, TabControlEventArgs e)
         {
             // selected capture packet tab
@@ -329,6 +334,17 @@ namespace IPScanner
             try
             {
                 this.device = this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex);
+                this.gatewayMac = this.NetworkService.GetGatewayMAC(this.device.Interface.FriendlyName);
+                if (this.gatewayMac != null)
+                {
+                    this.toolStripStatusLabel4.Text = this.NetworkService.GetMACString(this.gatewayMac);
+                    this.toolStripStatusLabel4.ForeColor = Color.Green;
+                }
+                else
+                {
+                    this.toolStripStatusLabel4.Text = "00:00:00:00:00:00";
+                    this.toolStripStatusLabel4.ForeColor = Color.Red;
+                }
             }
             catch (Exception ex)
             {
@@ -662,38 +678,50 @@ namespace IPScanner
                 if (String.IsNullOrEmpty(this.comboBoxInterface.Text))
                 {
                     MessageBoxUtils.Warning("กรุณาเลือก Interface");
+                    this.tabControl.SelectedTab = this.tabPage2;
                 }
                 else
                 {
                     string[] ipArr = this.treeView.SelectedNode.Text.Split(' ');
 
-                    if (ipArr[0].Split('.')[3] == "1")
+                    if (ipArr[0].Split('.')[3].Trim() == "1")
                     {
                         MessageBoxUtils.Warning("Cannot arp sproof gateway");
                     }
                     else
                     {
-                        bool existingVictim = this.victimList.ContainsKey(IPAddress.Parse(ipArr[0]));
+                        IPAddress newVictim = IPAddress.Parse(ipArr[0].Trim());
+                        bool existingVictim = this.victimList.ContainsKey(newVictim);
 
                         if (!existingVictim)
                         {
-                            PhysicalAddress mac = this.NetworkService.GetMacByIP(this.device, ipArr[0]);
-                            mac = this.NetworkService.GetMacByIP(this.device, ipArr[0]);
-                            if (mac != null)
+                            PhysicalAddress mac = this.NetworkService.GetMacByIP(this.device, newVictim.ToString());
+                            mac = this.NetworkService.GetMacByIP(this.device, newVictim.ToString());
+                            if (mac != null && this.gatewayMac != null)
                             {
-                                this.victimList.Add(IPAddress.Parse(ipArr[0]), mac);
+                                this.victimList.Add(newVictim, mac);
                                 this.treeView.SelectedNode.ForeColor = Color.Red;
                                 MessageBoxUtils.Information(String.Format("Netcut success."));
+
+                                Task.Factory.StartNew(() =>
+                                {
+                                    this.ARPSproofService.Disconnect(this.victimList, this.device, this.gatewayMac);
+                                });
                             }
                             else
                             {
                                 MessageBoxUtils.Warning("Get mac address fail!");
                             }
                         }
-                        else if (existingVictim && this.victimList.Remove(IPAddress.Parse(ipArr[0])))
+                        else if (existingVictim && this.victimList.Remove(newVictim))
                         {
                             this.treeView.SelectedNode.ForeColor = Color.Black;
                             MessageBoxUtils.Information(String.Format("Cancel netcut success."));
+
+                            Task.Factory.StartNew(() =>
+                            {
+                                this.ARPSproofService.Disconnect(this.victimList, this.device, this.gatewayMac);
+                            });
                         }
                     }
                 }

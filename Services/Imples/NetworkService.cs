@@ -71,8 +71,17 @@ namespace IPScanner.Services.Imples
         {
             try
             {
-                string gatewayip = GetGatewayIP(friendlyname).ToString();
-                return PhysicalAddress.Parse("");
+                IPAddress gatewayip = GetGatewayIP(friendlyname);
+                if (gatewayip != null)
+                {
+                    LibPcapLiveDeviceList pcapLiveDevices = LibPcapLiveDeviceList.Instance;
+                    LibPcapLiveDevice device = pcapLiveDevices.Where(w => w.Interface.FriendlyName == friendlyname).FirstOrDefault();
+                    return GetMacByIP(device, gatewayip.ToString());
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -84,34 +93,20 @@ namespace IPScanner.Services.Imples
         {
             try
             {
-                device.Open(DeviceMode.Promiscuous, 1000); //open device with 1000ms timeout
-                IPAddress ipV4 = device.Addresses[3].Addr.ipAddress; //possible critical point : Addresses[1] in hardcoding the index for obtaining ipv4 address
+                IPAddress resolveIp = IPAddress.Parse(ipAddress);
+                ARP arper = new ARP(device);
+                arper.Timeout = TimeSpan.FromMilliseconds(3000);
 
-                // send arp request
-                ARPPacket arprequestpacket = new ARPPacket(ARPOperation.Request, PhysicalAddress.Parse("00-00-00-00-00-00"), IPAddress.Parse(ipAddress), device.MacAddress, ipV4);
-                EthernetPacket ethernetpacket = new EthernetPacket(device.MacAddress, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"), EthernetPacketType.Arp);
-                ethernetpacket.PayloadPacket = arprequestpacket;
-                device.SendPacket(ethernetpacket);
-
-                device.Filter = "arp";
-                RawCapture rawcapture = null;
-                long scanduration = 5000;
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                while ((rawcapture = device.GetNextPacket()) != null && stopwatch.ElapsedMilliseconds <= scanduration)
+                // print the resolved address or indicate that none was found
+                var resolvedMacAddress = arper.Resolve(resolveIp);
+                if (resolvedMacAddress != null)
                 {
-                    Packet packet = Packet.ParsePacket(rawcapture.LinkLayerType, rawcapture.Data);
-                    ARPPacket arppacket = (ARPPacket)packet.Extract(typeof(ARPPacket));
-
-                    if (arppacket != null)
-                    {
-                        //return GetMACString(arppacket.SenderHardwareAddress);
-                        return arppacket.SenderHardwareAddress;
-                    }
+                    return resolvedMacAddress;
                 }
-
-                stopwatch.Stop();
-                return null;
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -124,7 +119,7 @@ namespace IPScanner.Services.Imples
         /// </summary>
         /// <param name="physicaladdress"></param>
         /// <returns></returns>
-        private static string GetMACString(PhysicalAddress physicaladdress)
+        public string GetMACString(PhysicalAddress physicaladdress)
         {
             try
             {

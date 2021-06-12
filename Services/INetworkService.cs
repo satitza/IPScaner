@@ -16,5 +16,7 @@ namespace IPScanner.Services
         PhysicalAddress GetGatewayMAC(string friendlyname);
 
         PhysicalAddress GetMacByIP(LibPcapLiveDevice device, string ipAddress);
+
+        string GetMACString(PhysicalAddress physicaladdress);
     }
 }
