@@ -1,12 +1,16 @@
-﻿using SharpPcap;
+﻿using PacketDotNet;
+using SharpPcap;
 using SharpPcap.AirPcap;
+using SharpPcap.LibPcap;
 using SharpPcap.WinPcap;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -76,16 +80,64 @@ namespace IPScanner.Services.Imples
             }
         }
 
-        public string GetMacByIP(string friendlyname, string ipAddress)
+        public PhysicalAddress GetMacByIP(LibPcapLiveDevice device, string ipAddress)
         {
             try
             {
-                return "";
+                device.Open(DeviceMode.Promiscuous, 1000); //open device with 1000ms timeout
+                IPAddress ipV4 = device.Addresses[3].Addr.ipAddress; //possible critical point : Addresses[1] in hardcoding the index for obtaining ipv4 address
+
+                // send arp request
+                ARPPacket arprequestpacket = new ARPPacket(ARPOperation.Request, PhysicalAddress.Parse("00-00-00-00-00-00"), IPAddress.Parse(ipAddress), device.MacAddress, ipV4);
+                EthernetPacket ethernetpacket = new EthernetPacket(device.MacAddress, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"), EthernetPacketType.Arp);
+                ethernetpacket.PayloadPacket = arprequestpacket;
+                device.SendPacket(ethernetpacket);
+
+                device.Filter = "arp";
+                RawCapture rawcapture = null;
+                long scanduration = 5000;
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                while ((rawcapture = device.GetNextPacket()) != null && stopwatch.ElapsedMilliseconds <= scanduration)
+                {
+                    Packet packet = Packet.ParsePacket(rawcapture.LinkLayerType, rawcapture.Data);
+                    ARPPacket arppacket = (ARPPacket)packet.Extract(typeof(ARPPacket));
+
+                    if (arppacket != null)
+                    {
+                        //return GetMACString(arppacket.SenderHardwareAddress);
+                        return arppacket.SenderHardwareAddress;
+                    }
+                }
+
+                stopwatch.Stop();
+                return null;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Converts a PhysicalAddress to colon delimited string like FF:FF:FF:FF:FF:FF
+        /// </summary>
+        /// <param name="physicaladdress"></param>
+        /// <returns></returns>
+        private static string GetMACString(PhysicalAddress physicaladdress)
+        {
+            try
+            {
+                string retval = "";
+                for (int i = 0; i <= 5; i++)
+                    retval += physicaladdress.GetAddressBytes()[i].ToString("X2") + ":";
+                return retval.Substring(0, retval.Length - 1);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
     }
 }

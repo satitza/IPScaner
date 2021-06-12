@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpPcap.LibPcap;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,6 +15,6 @@ namespace IPScanner.Services
 
         PhysicalAddress GetGatewayMAC(string friendlyname);
 
-        string GetMacByIP(string friendlyname, string ipAddress);
+        PhysicalAddress GetMacByIP(LibPcapLiveDevice device, string ipAddress);
     }
 }

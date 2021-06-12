@@ -16,6 +16,8 @@ using System.Threading;
 using SharpPcap.LibPcap;
 using SharpPcap;
 using PacketDotNet;
+using System.Net;
+using System.Net.NetworkInformation;
 
 namespace IPScanner
 {
@@ -324,7 +326,14 @@ namespace IPScanner
 
         private void comboBoxInterface_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.device = this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex);
+            try
+            {
+                this.device = this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex);
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtils.Error(ex.Message);
+            }
         }
 
         private void buttonCapture_Click(object sender, EventArgs e)
@@ -644,7 +653,7 @@ namespace IPScanner
 
         /************************************************************************************************************************************************/
 
-        private ICollection<string> victimList = new List<string>();
+        private Dictionary<IPAddress, PhysicalAddress> victimList = new Dictionary<IPAddress, PhysicalAddress>();
 
         private void netcutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -664,25 +673,27 @@ namespace IPScanner
                     }
                     else
                     {
-                        string existingVictim = this.victimList.FirstOrDefault(f => f == ipArr[0]);
+                        bool existingVictim = this.victimList.ContainsKey(IPAddress.Parse(ipArr[0]));
 
-                        if (existingVictim == null)
+                        if (!existingVictim)
                         {
-                            this.victimList.Add(ipArr[0]);
-                            this.treeView.SelectedNode.ForeColor = Color.Red;
-                            // MessageBox.Show(this.NetworkService.GetMacByIP(ipArr[0]));
-                            // loop arp sproof send victim list to parameter
-
-                            string gw_ip = this.NetworkService.GetGatewayIP(this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex).Interface.FriendlyName).ToString();
-                            MessageBox.Show(gw_ip);
-
-                            //MessageBox.Show(this.NetworkService.GetGatewayMAC(this.SnifferService.GetDeviceByIndex(this.comboBoxInterface.SelectedIndex).Interface.FriendlyName).ToString());
+                            PhysicalAddress mac = this.NetworkService.GetMacByIP(this.device, ipArr[0]);
+                            mac = this.NetworkService.GetMacByIP(this.device, ipArr[0]);
+                            if (mac != null)
+                            {
+                                this.victimList.Add(IPAddress.Parse(ipArr[0]), mac);
+                                this.treeView.SelectedNode.ForeColor = Color.Red;
+                                MessageBoxUtils.Information(String.Format("Netcut success."));
+                            }
+                            else
+                            {
+                                MessageBoxUtils.Warning("Get mac address fail!");
+                            }
                         }
-                        else
+                        else if (existingVictim && this.victimList.Remove(IPAddress.Parse(ipArr[0])))
                         {
-                            this.victimList.Remove(ipArr[0]);
                             this.treeView.SelectedNode.ForeColor = Color.Black;
-                            // remove victim from list add restart arp sproof thread
+                            MessageBoxUtils.Information(String.Format("Cancel netcut success."));
                         }
                     }
                 }

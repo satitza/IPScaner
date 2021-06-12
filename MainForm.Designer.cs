@@ -58,6 +58,7 @@ namespace IPScanner
             this.richTextBoxDetail = new System.Windows.Forms.RichTextBox();
             this.richTextBoxHex = new System.Windows.Forms.RichTextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.buttonFilterHelp = new System.Windows.Forms.Button();
             this.textBoxFilter = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.buttonStop = new System.Windows.Forms.Button();
@@ -78,7 +79,6 @@ namespace IPScanner
             this.scanPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.capturePacketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.netcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buttonFilterHelp = new System.Windows.Forms.Button();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -364,7 +364,7 @@ namespace IPScanner
             // 
             // richTextBoxHex
             // 
-            this.richTextBoxHex.BackColor = System.Drawing.Color.Blue;
+            this.richTextBoxHex.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.richTextBoxHex.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxHex.ForeColor = System.Drawing.Color.White;
             this.richTextBoxHex.Location = new System.Drawing.Point(0, 0);
@@ -388,6 +388,16 @@ namespace IPScanner
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1150, 70);
             this.panel2.TabIndex = 0;
+            // 
+            // buttonFilterHelp
+            // 
+            this.buttonFilterHelp.Location = new System.Drawing.Point(14, 33);
+            this.buttonFilterHelp.Name = "buttonFilterHelp";
+            this.buttonFilterHelp.Size = new System.Drawing.Size(44, 23);
+            this.buttonFilterHelp.TabIndex = 6;
+            this.buttonFilterHelp.Text = "HELP";
+            this.buttonFilterHelp.UseVisualStyleBackColor = true;
+            this.buttonFilterHelp.Click += new System.EventHandler(this.buttonFilterHelp_Click);
             // 
             // textBoxFilter
             // 
@@ -580,16 +590,6 @@ namespace IPScanner
             this.netcutToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.netcutToolStripMenuItem.Text = "Netcut";
             this.netcutToolStripMenuItem.Click += new System.EventHandler(this.netcutToolStripMenuItem_Click);
-            // 
-            // buttonFilterHelp
-            // 
-            this.buttonFilterHelp.Location = new System.Drawing.Point(14, 33);
-            this.buttonFilterHelp.Name = "buttonFilterHelp";
-            this.buttonFilterHelp.Size = new System.Drawing.Size(44, 23);
-            this.buttonFilterHelp.TabIndex = 6;
-            this.buttonFilterHelp.Text = "HELP";
-            this.buttonFilterHelp.UseVisualStyleBackColor = true;
-            this.buttonFilterHelp.Click += new System.EventHandler(this.buttonFilterHelp_Click);
             // 
             // MainForm
             // 
