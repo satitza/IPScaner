@@ -696,7 +696,7 @@ namespace IPScanner
                         if (!existingVictim)
                         {
                             PhysicalAddress mac = this.NetworkService.GetMacByIP(this.device, newVictim.ToString());
-                            mac = this.NetworkService.GetMacByIP(this.device, newVictim.ToString());
+
                             if (mac != null && this.gatewayMac != null)
                             {
                                 this.victimList.Add(newVictim, mac);

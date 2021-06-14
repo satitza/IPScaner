@@ -33,6 +33,8 @@ namespace IPScanner
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.txt_timeout = new System.Windows.Forms.TextBox();
             this.txt_thread = new System.Windows.Forms.TextBox();
@@ -79,8 +81,6 @@ namespace IPScanner
             this.scanPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.capturePacketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.netcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -127,6 +127,18 @@ namespace IPScanner
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Size = new System.Drawing.Size(13, 17);
             this.toolStripStatusLabel2.Text = "0";
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(151, 17);
+            this.toolStripStatusLabel3.Text = "         Gateway Mac Addres :";
+            // 
+            // toolStripStatusLabel4
+            // 
+            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
+            this.toolStripStatusLabel4.Size = new System.Drawing.Size(94, 17);
+            this.toolStripStatusLabel4.Text = "00:00:00:00:00:00";
             // 
             // panel1
             // 
@@ -595,18 +607,6 @@ namespace IPScanner
             this.netcutToolStripMenuItem.Text = "Netcut";
             this.netcutToolStripMenuItem.Click += new System.EventHandler(this.netcutToolStripMenuItem_Click);
             // 
-            // toolStripStatusLabel3
-            // 
-            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(151, 17);
-            this.toolStripStatusLabel3.Text = "         Gateway Mac Addres :";
-            // 
-            // toolStripStatusLabel4
-            // 
-            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-            this.toolStripStatusLabel4.Size = new System.Drawing.Size(94, 17);
-            this.toolStripStatusLabel4.Text = "00:00:00:00:00:00";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -618,6 +618,7 @@ namespace IPScanner
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Network Tools";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.statusStrip.ResumeLayout(false);
