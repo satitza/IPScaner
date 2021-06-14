@@ -80,10 +80,12 @@ namespace IPScanner.Services.Imples
                 foreach (var target in this.targetlist)
                 {
 
+                    // ARP Request
                     // ARPPacket arppacketforgatewayrequest = new ARPPacket(ARPOperation.Request, PhysicalAddress.Parse("00-00-00-00-00-00"), gatewayIp, this.currentDevice.MacAddress, target.Key);
-                    ARPPacket arppacketforgatewayrequest = new ARPPacket(ARPOperation.Response, target.Value, target.Key, this.currentDevice.MacAddress, gatewayIp);
+                    // EthernetPacket ethernetpacketforgatewayrequest = new EthernetPacket(this.currentDevice.MacAddress, gatewayMac, EthernetPacketType.Arp);
 
-                    //EthernetPacket ethernetpacketforgatewayrequest = new EthernetPacket(this.currentDevice.MacAddress, gatewayMac, EthernetPacketType.Arp);
+                    // ARP Reply
+                    ARPPacket arppacketforgatewayrequest = new ARPPacket(ARPOperation.Response, target.Value, target.Key, this.currentDevice.MacAddress, gatewayIp);
                     EthernetPacket ethernetpacketforgatewayrequest = new EthernetPacket(this.currentDevice.MacAddress, target.Value, EthernetPacketType.Arp);
 
                     ethernetpacketforgatewayrequest.PayloadPacket = arppacketforgatewayrequest;
